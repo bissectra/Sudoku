@@ -114,6 +114,7 @@ import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
 
     s.directionalLight(lightR, lightG, lightB, 1, 0, -1);
 
+    diceController.processFrame();
     const currentRollingAnimation = diceController.computeRollingAnimation();
     s.push();
     s.scale(1.5);

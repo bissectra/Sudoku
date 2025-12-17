@@ -9,12 +9,28 @@ import type { DiceRotation, Grid, RollingAnimation, RollingState } from "./types
 
 const RANDOM_SEED = 0xdeadbeef;
 const ROLL_DURATION_MS = 320;
+const INVALID_HIGHLIGHT_DURATION_MS = 600;
+const INVERSE_ROTATION: Record<DiceRotation, DiceRotation> = {
+  left: "right",
+  right: "left",
+  up: "down",
+  down: "up",
+};
+
+type PendingRollback = {
+  sourceCellIndex: number;
+  targetCellIndex: number;
+  rotation: DiceRotation;
+};
 
 export class DiceController {
   public readonly diceCellsMask: boolean[];
   public readonly diceOrientations: CubeOrientation[];
   private rngState: number;
   private rollingState: RollingState | null = null;
+  private pendingRollback: PendingRollback | null = null;
+  private invalidHighlightCell: number | null = null;
+  private invalidHighlightExpiry = 0;
   private readonly gridSize: number;
   private readonly totalCells: number;
 
@@ -171,6 +187,28 @@ export class DiceController {
     }
   }
 
+  private isLatinSquareValid(): boolean {
+    const rowSets: Set<number>[] = Array.from({ length: this.gridSize }, () => new Set());
+    const colSets: Set<number>[] = Array.from({ length: this.gridSize }, () => new Set());
+    for (let index = 0; index < this.totalCells; index += 1) {
+      if (!this.diceCellsMask[index]) {
+        continue;
+      }
+      const value = this.getTopFaceValue(index);
+      if (value === null) {
+        continue;
+      }
+      const row = Math.floor(index / this.gridSize);
+      const col = index % this.gridSize;
+      if (rowSets[row].has(value) || colSets[col].has(value)) {
+        return false;
+      }
+      rowSets[row].add(value);
+      colSets[col].add(value);
+    }
+    return true;
+  }
+
   private getTopFaceValueFromOrientation(orientation: CubeOrientation): number {
     for (const digit of DICE_DIGITS) {
       const predicate = DIGIT_ORIENTATION_PREDICATES[digit];
@@ -205,8 +243,29 @@ export class DiceController {
     };
   }
 
+  processFrame(): void {
+    const now = performance.now();
+    if (
+      this.pendingRollback &&
+      now >= this.invalidHighlightExpiry &&
+      this.rollingState === null
+    ) {
+      const rollback = this.pendingRollback;
+      this.pendingRollback = null;
+      this.invalidHighlightCell = null;
+      this.startRollingAnimation(rollback.sourceCellIndex, rollback.rotation);
+    }
+  }
+
+  isCellInvalidHighlight(cellIndex: number): boolean {
+    return this.invalidHighlightCell === cellIndex;
+  }
+
   startRollingAnimation(cellIndex: number, rotation: DiceRotation): void {
     if (!this.diceCellsMask[cellIndex]) {
+      return;
+    }
+    if (this.pendingRollback !== null) {
       return;
     }
     const targetCellIndex = this.getTargetCellIndex(cellIndex, rotation);
@@ -230,6 +289,23 @@ export class DiceController {
     this.diceCellsMask[cellIndex] = false;
     this.diceCellsMask[targetCellIndex] = true;
     this.rollingState = null;
+    if (!this.isLatinSquareValid()) {
+      this.handleInvalidMove(cellIndex, targetCellIndex, rotation);
+    }
+  }
+
+  private handleInvalidMove(
+    cellIndex: number,
+    targetCellIndex: number,
+    rotation: DiceRotation
+  ): void {
+    this.invalidHighlightCell = targetCellIndex;
+    this.invalidHighlightExpiry = performance.now() + INVALID_HIGHLIGHT_DURATION_MS;
+    this.pendingRollback = {
+      sourceCellIndex: targetCellIndex,
+      targetCellIndex: cellIndex,
+      rotation: INVERSE_ROTATION[rotation],
+    };
   }
 
   getRollingState(): RollingState | null {
