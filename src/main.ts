@@ -107,14 +107,15 @@ const sketch = (s: p5): void => {
   };
 
   const drawDice = (): void => {
-    // draw a unit dice with pips
-    // draws a box of size 1 centered at origin
+    // Dice body
     s.push();
-    s.fill(255, 0, 0);
     s.noStroke();
+    s.ambientMaterial(235, 232, 220); // warm ivory
+    s.specularMaterial(250);
+    s.shininess(20);
     s.box(1);
     s.pop();
-    const pipRadius = 0.06;
+    const pipRadius = 0.15;
     const faceOffset = 0.5;
     const pipOffset = 0.2;
 
@@ -151,9 +152,10 @@ const sketch = (s: p5): void => {
       for (const pip of pips) {
         s.push();
         s.translate(pip[0] * pipOffset, pip[1] * pipOffset, 0.02);
-        s.normalMaterial();
+        s.ambientMaterial(40, 40, 40); // soft charcoal
+        s.shininess(10);
         s.noStroke();
-        s.sphere(pipRadius);
+        s.ellipse(0, 0, pipRadius, pipRadius);
         s.pop();
       }
 
@@ -258,7 +260,7 @@ const sketch = (s: p5): void => {
       return;
     }
 
-    const BOARD_ROTATION_X = 0;
+    const BOARD_ROTATION_X = 45;
 
     s.push();
     s.rotateX(BOARD_ROTATION_X);
@@ -358,13 +360,11 @@ const sketch = (s: p5): void => {
   s.draw = (): void => {
     s.background(18);
     const [lightR, lightG, lightB] = lightColor;
-    s.directionalLight(lightR, lightG, lightB, 1, 0, 0);
-    s.directionalLight(lightR, lightG, lightB, -1, 0, 0);
-    s.directionalLight(lightR, lightG, lightB, 0, 1, 0);
-    s.directionalLight(lightR, lightG, lightB, 0, -1, 0);
-    s.directionalLight(lightR, lightG, lightB, 0, 0, -1);
+    const lightA = 0.6;
+    // Soft ambient base
+    s.ambientLight(lightR * lightA, lightG * lightA, lightB * lightA);
     // uncomment to enable mouse orbit control
-    s.orbitControl();
+    // s.orbitControl();
     s.push();
     s.scale(1.5);
     drawGrid();
