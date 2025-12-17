@@ -406,7 +406,7 @@ const sketch = (s: p5): void => {
 
   
     // uncomment to enable mouse orbit control
-    s.orbitControl();
+    // s.orbitControl();
     s.push();
     s.scale(1.5);
     drawGrid();
