@@ -3,34 +3,17 @@ import {
   DICE_DIGITS,
   DICE_ROTATIONS,
   DIGIT_ORIENTATION_PREDICATES,
-  ORIENTATIONS_FOR_TOP_DIGIT,
 } from "./orientation";
 import type { DiceRotation, Grid, RollingAnimation, RollingState } from "./types";
 
 const RANDOM_SEED = 0xdeadbeef;
 const ROLL_DURATION_MS = 320;
-const INVALID_HIGHLIGHT_DURATION_MS = 600;
-const INVERSE_ROTATION: Record<DiceRotation, DiceRotation> = {
-  left: "right",
-  right: "left",
-  up: "down",
-  down: "up",
-};
-
-type PendingRollback = {
-  sourceCellIndex: number;
-  targetCellIndex: number;
-  rotation: DiceRotation;
-};
 
 export class DiceController {
   public readonly diceCellsMask: boolean[];
   public readonly diceOrientations: CubeOrientation[];
   private rngState: number;
   private rollingState: RollingState | null = null;
-  private pendingRollback: PendingRollback | null = null;
-  private invalidHighlightCells: Set<number> = new Set();
-  private invalidHighlightExpiry = 0;
   private readonly gridSize: number;
   private readonly totalCells: number;
 
@@ -54,85 +37,29 @@ export class DiceController {
     let orientation = CubeOrientation.identity();
     const rotationCount = 1 + Math.floor(this.seededRandom() * 3);
     for (let i = 0; i < rotationCount; i += 1) {
-      const rotation = DICE_ROTATIONS[Math.floor(this.seededRandom() * DICE_ROTATIONS.length)];
+      const rotation =
+        DICE_ROTATIONS[Math.floor(this.seededRandom() * DICE_ROTATIONS.length)];
       orientation = orientation.roll(rotation);
     }
     return orientation;
   }
 
-  private shuffleArray<T>(items: T[]): T[] {
-    const array = [...items];
-    for (let i = array.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(this.seededRandom() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-  }
-
-  private pickRandomElement<T>(items: T[]): T {
-    const index = Math.floor(this.seededRandom() * items.length);
-    return items[index];
-  }
-
-  private buildPartialLatinSquare(grid: Grid): Array<number | null> {
+  setDiceMaskFromGrid(grid: Grid): void {
     const height = grid.length;
     const width = height > 0 ? grid[0].length : this.gridSize;
     if (height !== this.gridSize || width !== this.gridSize) {
-      throw new Error("Grid dimensions mismatch when building Latin square.");
+      throw new Error("Grid dimensions mismatch when setting dice mask.");
     }
-    const assignments: Array<number | null> = new Array(this.totalCells).fill(null);
-    const rowUsed: Set<number>[] = Array.from({ length: height }, () => new Set());
-    const colUsed: Set<number>[] = Array.from({ length: width }, () => new Set());
-    const positions: Array<{ row: number; col: number }> = [];
     for (let row = 0; row < height; row += 1) {
       for (let col = 0; col < width; col += 1) {
-        if (grid[row][col] === "#") {
-          positions.push({ row, col });
+        const cellIndex = row * this.gridSize + col;
+        const hasDice = grid[row][col] === "#";
+        this.diceCellsMask[cellIndex] = hasDice;
+        if (hasDice) {
+          this.diceOrientations[cellIndex] = this.randomDiceOrientation();
         }
       }
     }
-    const orderedPositions = this.shuffleArray(positions);
-
-    const solve = (index: number): boolean => {
-      if (index === orderedPositions.length) {
-        return true;
-      }
-      const { row, col } = orderedPositions[index];
-      const options = DICE_DIGITS.filter(
-        (digit) => !rowUsed[row].has(digit) && !colUsed[col].has(digit)
-      );
-      const shuffledOptions = this.shuffleArray(options);
-      if (shuffledOptions.length === 0) {
-        return false;
-      }
-      const cellIndex = row * width + col;
-      for (const digit of shuffledOptions) {
-        assignments[cellIndex] = digit;
-        rowUsed[row].add(digit);
-        colUsed[col].add(digit);
-        if (solve(index + 1)) {
-          return true;
-        }
-        rowUsed[row].delete(digit);
-        colUsed[col].delete(digit);
-        assignments[cellIndex] = null;
-      }
-      return false;
-    };
-
-    if (!solve(0)) {
-      throw new Error("Unable to complete Latin square for that grid.");
-    }
-
-    return assignments;
-  }
-
-  private randomOrientationForTopValue(value: number): CubeOrientation {
-    const candidates = ORIENTATIONS_FOR_TOP_DIGIT[value];
-    if (!candidates || candidates.length === 0) {
-      throw new Error(`No orientations defined for top face value ${value}`);
-    }
-    return this.pickRandomElement(candidates);
   }
 
   private getTargetCellIndex(cellIndex: number, rotation: DiceRotation): number | null {
@@ -165,126 +92,6 @@ export class DiceController {
       return null;
     }
     return targetRow * this.gridSize + targetCol;
-  }
-
-  setDiceMaskFromGrid(grid: Grid): void {
-    const latinAssignment = this.buildPartialLatinSquare(grid);
-    const height = grid.length;
-    const width = height > 0 ? grid[0].length : this.gridSize;
-    for (let row = 0; row < height; row += 1) {
-      for (let col = 0; col < width; col += 1) {
-        const cellIndex = row * this.gridSize + col;
-        const hasDice = grid[row][col] === "#";
-        this.diceCellsMask[cellIndex] = hasDice;
-        if (hasDice) {
-          const digit = latinAssignment[cellIndex];
-          if (digit === null) {
-            throw new Error("Dice cell missing top-face digit after Latin square generation.");
-          }
-          this.diceOrientations[cellIndex] = this.randomOrientationForTopValue(digit);
-        }
-      }
-    }
-    this.scrambleLatinGrid(10000);
-  }
-
-  private validateLatinSquare(): { valid: boolean; conflicts: number[] } {
-    const rowMaps: Map<number, number>[] = Array.from(
-      { length: this.gridSize },
-      () => new Map()
-    );
-    const colMaps: Map<number, number>[] = Array.from(
-      { length: this.gridSize },
-      () => new Map()
-    );
-    for (let index = 0; index < this.totalCells; index += 1) {
-      if (!this.diceCellsMask[index]) {
-        continue;
-      }
-      const value = this.getTopFaceValue(index);
-      if (value === null) {
-        continue;
-      }
-      const row = Math.floor(index / this.gridSize);
-      const col = index % this.gridSize;
-      const rowConflict = rowMaps[row].get(value);
-      if (rowConflict !== undefined) {
-        return { valid: false, conflicts: [rowConflict, index] };
-      }
-      rowMaps[row].set(value, index);
-      const colConflict = colMaps[col].get(value);
-      if (colConflict !== undefined) {
-        return { valid: false, conflicts: [colConflict, index] };
-      }
-      colMaps[col].set(value, index);
-    }
-    return { valid: true, conflicts: [] };
-  }
-
-  private getDiceIndices(): number[] {
-    const indices: number[] = [];
-    for (let index = 0; index < this.totalCells; index += 1) {
-      if (this.diceCellsMask[index]) {
-        indices.push(index);
-      }
-    }
-    return indices;
-  }
-
-  private applyImmediateMove(
-    sourceIndex: number,
-    targetIndex: number,
-    rotation: DiceRotation
-  ): { sourceOrientation: CubeOrientation; targetOrientation: CubeOrientation } {
-    const sourceOrientation = this.diceOrientations[sourceIndex];
-    const targetOrientation = this.diceOrientations[targetIndex];
-    this.diceOrientations[targetIndex] = sourceOrientation.roll(rotation);
-    this.diceCellsMask[sourceIndex] = false;
-    this.diceCellsMask[targetIndex] = true;
-    return { sourceOrientation, targetOrientation };
-  }
-
-  private revertImmediateMove(
-    sourceIndex: number,
-    targetIndex: number,
-    saved: { sourceOrientation: CubeOrientation; targetOrientation: CubeOrientation }
-  ): void {
-    this.diceOrientations[sourceIndex] = saved.sourceOrientation;
-    this.diceOrientations[targetIndex] = saved.targetOrientation;
-    this.diceCellsMask[sourceIndex] = true;
-    this.diceCellsMask[targetIndex] = false;
-  }
-
-  private attemptScrambleMove(cellIndex: number, rotation: DiceRotation): boolean {
-    const targetCellIndex = this.getTargetCellIndex(cellIndex, rotation);
-    if (targetCellIndex === null || this.diceCellsMask[targetCellIndex]) {
-      return false;
-    }
-    const savedState = this.applyImmediateMove(cellIndex, targetCellIndex, rotation);
-    const validation = this.validateLatinSquare();
-    if (!validation.valid) {
-      this.revertImmediateMove(cellIndex, targetCellIndex, savedState);
-      return false;
-    }
-    return true;
-  }
-
-  private scrambleLatinGrid(moveCount: number): void {
-    let applied = 0;
-    let attempts = 0;
-    const maxAttempts = moveCount * 10;
-    while (applied < moveCount && attempts < maxAttempts) {
-      attempts += 1;
-      const diceCells = this.getDiceIndices();
-      if (diceCells.length === 0) {
-        break;
-      }
-      const cellIndex = diceCells[Math.floor(this.seededRandom() * diceCells.length)];
-      const rotation = DICE_ROTATIONS[Math.floor(this.seededRandom() * DICE_ROTATIONS.length)];
-      if (this.attemptScrambleMove(cellIndex, rotation)) {
-        applied += 1;
-      }
-    }
   }
 
   private getTopFaceValueFromOrientation(orientation: CubeOrientation): number {
@@ -321,41 +128,12 @@ export class DiceController {
     };
   }
 
-  private updateHighlightState(): void {
-    if (this.invalidHighlightCells.size === 0) {
-      return;
-    }
-    const now = performance.now();
-    if (now >= this.invalidHighlightExpiry) {
-      this.invalidHighlightCells.clear();
-    }
-  }
-
   processFrame(): void {
-    const now = performance.now();
-    if (
-      this.pendingRollback &&
-      now >= this.invalidHighlightExpiry &&
-      this.rollingState === null
-    ) {
-      const rollback = this.pendingRollback;
-      this.pendingRollback = null;
-      this.invalidHighlightCells.clear();
-      this.startRollingAnimation(rollback.sourceCellIndex, rollback.rotation);
-      return;
-    }
-    this.updateHighlightState();
-  }
-
-  isCellInvalidHighlight(cellIndex: number): boolean {
-    return this.invalidHighlightCells.has(cellIndex);
+    // Reserved for future state updates.
   }
 
   startRollingAnimation(cellIndex: number, rotation: DiceRotation): void {
     if (!this.diceCellsMask[cellIndex]) {
-      return;
-    }
-    if (this.pendingRollback !== null) {
       return;
     }
     const targetCellIndex = this.getTargetCellIndex(cellIndex, rotation);
@@ -379,27 +157,6 @@ export class DiceController {
     this.diceCellsMask[cellIndex] = false;
     this.diceCellsMask[targetCellIndex] = true;
     this.rollingState = null;
-    const validation = this.validateLatinSquare();
-    if (!validation.valid) {
-      this.handleInvalidMove(cellIndex, targetCellIndex, rotation, validation.conflicts);
-    }
-  }
-
-  private handleInvalidMove(
-    cellIndex: number,
-    targetCellIndex: number,
-    rotation: DiceRotation,
-    conflicts: number[]
-  ): void {
-    this.invalidHighlightCells.clear();
-    conflicts.forEach((index) => this.invalidHighlightCells.add(index));
-    this.invalidHighlightCells.add(targetCellIndex);
-    this.invalidHighlightExpiry = performance.now() + INVALID_HIGHLIGHT_DURATION_MS;
-    this.pendingRollback = {
-      sourceCellIndex: targetCellIndex,
-      targetCellIndex: cellIndex,
-      rotation: INVERSE_ROTATION[rotation],
-    };
   }
 
   getRollingState(): RollingState | null {

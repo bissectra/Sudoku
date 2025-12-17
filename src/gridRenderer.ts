@@ -28,8 +28,6 @@ const drawDiceForCell = (
   )
     .slice()
     .reverse();
-  const isInvalidHighlight = diceController.isCellInvalidHighlight(cellIndex);
-
   s.push();
   s.translate(0, 0, diceElevation);
   if (rollingAnimation?.cellIndex === cellIndex) {
@@ -77,15 +75,7 @@ const drawDiceForCell = (
   s.fill(faceFill);
   s.pop();
 
-  if (isInvalidHighlight) {
-    s.push();
-    s.noFill();
-    s.stroke(255, 60, 60, 220);
-    s.strokeWeight(3);
-    s.box(diceSize + 8, diceSize + 8, diceSize + 8);
-    s.pop();
-  }
-  if (isHovered && !isInvalidHighlight) {
+  if (isHovered) {
     s.push();
     s.noFill();
     const highlightPulse = Math.sin(s.frameCount * 0.06 + cellIndex) * 0.3 + 0.7;
