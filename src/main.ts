@@ -19,6 +19,19 @@ type Orientation = {
   bottom: number;
 };
 
+type RendererWithCamera = {
+  _curCamera?: {
+    cameraMatrix?: {
+      multiplyPoint(point: p5.Vector): p5.Vector;
+    };
+  };
+  uPMatrix?: {
+    multiplyAndNormalizePoint(point: p5.Vector): { x: number; y: number };
+  };
+};
+
+type RendererAwareP5 = p5 & { _renderer?: RendererWithCamera };
+
 const rotateX = (orientation: Orientation): Orientation => ({
   front: orientation.top,
   back: orientation.bottom,
@@ -295,9 +308,9 @@ const sketch = (s: p5): void => {
     s.rotateX(30);
     s.translate(-gridDimension / 2 + cellSize / 2, -gridDimension / 2 + cellSize / 2, 0);
 
-    const renderer = s._renderer;
+    const renderer = (s as RendererAwareP5)._renderer;
     const cameraMatrix = renderer?._curCamera?.cameraMatrix;
-    const projectionMatrix = renderer.uPMatrix;
+    const projectionMatrix = renderer?.uPMatrix;
     const canProject = Boolean(cameraMatrix && projectionMatrix);
     const gridOffset = -gridDimension / 2 + cellSize / 2;
     const diceSize = cellSize * 0.6;
@@ -310,7 +323,7 @@ const sketch = (s: p5): void => {
     const projectCellCenter = (row: number, col: number):
       | { screenX: number; screenY: number }
       | null => {
-      if (!canProject) {
+      if (!canProject || !cameraMatrix || !projectionMatrix) {
         return null;
       }
       const columnOffset = col * (cellSize + cellSpacing);
@@ -325,7 +338,7 @@ const sketch = (s: p5): void => {
       point.y = rotatedY;
       point.z = rotatedZ;
       point.mult(1.5);
-      const viewPoint = cameraMatrix!.multiplyPoint(point);
+      const viewPoint = cameraMatrix.multiplyPoint(point);
       const ndc = projectionMatrix.multiplyAndNormalizePoint(viewPoint);
       if (!Number.isFinite(ndc.x) || !Number.isFinite(ndc.y)) {
         return null;
