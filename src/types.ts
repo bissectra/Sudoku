@@ -13,6 +13,7 @@ export type RotationAxis = "x" | "y";
 
 export type RollingState = {
   cellIndex: number;
+  targetCellIndex: number;
   rotation: DiceRotation;
   startTime: number;
 };

@@ -9,8 +9,10 @@ export class DiceController {
   public readonly diceOrientations: CubeOrientation[];
   private rngState: number;
   private rollingState: RollingState | null = null;
+  private readonly gridSize: number;
 
   constructor(gridSize: number, density = 0.45, seed = RANDOM_SEED) {
+    this.gridSize = gridSize;
     this.rngState = seed;
     const totalCells = gridSize * gridSize;
     this.diceCellsMask = Array.from(
@@ -38,6 +40,38 @@ export class DiceController {
     return orientation;
   }
 
+  private getTargetCellIndex(cellIndex: number, rotation: DiceRotation): number | null {
+    const row = Math.floor(cellIndex / this.gridSize);
+    const col = cellIndex % this.gridSize;
+    let targetRow = row;
+    let targetCol = col;
+    switch (rotation) {
+      case "left":
+        targetCol -= 1;
+        break;
+      case "right":
+        targetCol += 1;
+        break;
+      case "up":
+        targetRow -= 1;
+        break;
+      case "down":
+        targetRow += 1;
+        break;
+      default:
+        break;
+    }
+    if (
+      targetRow < 0 ||
+      targetRow >= this.gridSize ||
+      targetCol < 0 ||
+      targetCol >= this.gridSize
+    ) {
+      return null;
+    }
+    return targetRow * this.gridSize + targetCol;
+  }
+
   computeRollingAnimation(): RollingAnimation | null {
     if (this.rollingState === null) {
       return null;
@@ -50,8 +84,16 @@ export class DiceController {
   }
 
   startRollingAnimation(cellIndex: number, rotation: DiceRotation): void {
+    if (!this.diceCellsMask[cellIndex]) {
+      return;
+    }
+    const targetCellIndex = this.getTargetCellIndex(cellIndex, rotation);
+    if (targetCellIndex === null || this.diceCellsMask[targetCellIndex]) {
+      return;
+    }
     this.rollingState = {
       cellIndex,
+      targetCellIndex,
       rotation,
       startTime: performance.now(),
     };
@@ -61,8 +103,10 @@ export class DiceController {
     if (this.rollingState === null) {
       return;
     }
-    const { cellIndex, rotation } = this.rollingState;
-    this.diceOrientations[cellIndex] = this.diceOrientations[cellIndex].roll(rotation);
+    const { cellIndex, targetCellIndex, rotation } = this.rollingState;
+    this.diceOrientations[targetCellIndex] = this.diceOrientations[cellIndex].roll(rotation);
+    this.diceCellsMask[cellIndex] = false;
+    this.diceCellsMask[targetCellIndex] = true;
     this.rollingState = null;
   }
 

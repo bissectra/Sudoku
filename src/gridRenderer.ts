@@ -31,6 +31,29 @@ const drawDiceForCell = (
 
   s.push();
   s.translate(0, 0, diceElevation);
+  if (rollingAnimation?.cellIndex === cellIndex) {
+    const animationProgress = Math.min(rollingAnimation.progress, 1);
+    const movementDistance = (CELL_SIZE + CELL_SPACING) * animationProgress;
+    let offsetX = 0;
+    let offsetY = 0;
+    switch (rollingAnimation.rotation) {
+      case "left":
+        offsetX = -movementDistance;
+        break;
+      case "right":
+        offsetX = movementDistance;
+        break;
+      case "up":
+        offsetY = -movementDistance;
+        break;
+      case "down":
+        offsetY = movementDistance;
+        break;
+      default:
+        break;
+    }
+    s.translate(offsetX, offsetY, 0);
+  }
   s.ambientMaterial(166, 199, 255);
   s.specularMaterial(255);
   s.stroke(210);
