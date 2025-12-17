@@ -297,7 +297,7 @@ const sketch = (s: p5): void => {
         s.fill(isFilled ? filledColor : emptyColor);
         s.stroke(40);
         s.strokeWeight(1);
-        // s.box(cellSize, cellSize, boxDepth);
+        s.box(cellSize, cellSize, boxDepth);
 
         const cellIndex = row * 8 + col;
         const orientation = orientationPresets[cellIndex];
