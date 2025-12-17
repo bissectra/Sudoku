@@ -240,10 +240,11 @@ const sketch = (s: p5): void => {
   s.draw = (): void => {
     s.background(18);
     const [lightR, lightG, lightB] = lightColor;
-    s.directionalLight(lightR, lightG, lightB, 0, 1, 1);
-    s.directionalLight(lightR, lightG, lightB, 0, -1, -1);
-    s.directionalLight(lightR, lightG, lightB, 0, -1, 1);
-    s.directionalLight(lightR, lightG, lightB, 0, 1, -1);
+    s.directionalLight(lightR, lightG, lightB, 1, 0, 0);
+    s.directionalLight(lightR, lightG, lightB, -1, 0, 0);
+    s.directionalLight(lightR, lightG, lightB, 0, 1, 0);
+    s.directionalLight(lightR, lightG, lightB, 0, -1, 0);
+    s.directionalLight(lightR, lightG, lightB, 0, 0, -1);
     s.orbitControl();
     s.push();
     s.scale(1.5);
