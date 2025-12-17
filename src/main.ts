@@ -42,11 +42,83 @@ const sketch = (s: p5): void => {
   let payload: SolutionPayload | null = null;
   let selectedGrid: Grid | null = null;
   let solutionLabel = "Loading…";
+  const refreshInfoLabel = (): void => {
+    const infoEl = document.getElementById("info");
+    if (infoEl) {
+      infoEl.textContent = solutionLabel;
+    }
+  };
+  refreshInfoLabel();
   const requested = parseRequestedIndex();
 
   // Dimensions for the drawing grid
   const cellSize = 50;
   const cellSpacing = 8;
+  const boxDepth = cellSize * 0.25;
+
+  const dicePipPattern: Record<number, [number, number][]> = {
+    1: [[0, 0]],
+    2: [
+      [-1, -1],
+      [1, 1],
+    ],
+    3: [
+      [-1, -1],
+      [0, 0],
+      [1, 1],
+    ],
+    4: [
+      [-1, -1],
+      [-1, 1],
+      [1, -1],
+      [1, 1],
+    ],
+    5: [
+      [-1, -1],
+      [-1, 1],
+      [0, 0],
+      [1, -1],
+      [1, 1],
+    ],
+    6: [
+      [-1, -1],
+      [-1, 0],
+      [-1, 1],
+      [1, -1],
+      [1, 0],
+      [1, 1],
+    ],
+  };
+
+  const drawDiceForCell = (row: number, col: number): void => {
+    const diceSize = cellSize * 0.6;
+    const pipGap = diceSize * 0.26;
+    const pipRadius = diceSize * 0.1;
+    const diceValue = ((row * 8 + col) % 6) + 1;
+    const pipPositions = dicePipPattern[diceValue] ?? dicePipPattern[1];
+    const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
+
+    s.push();
+    s.translate(0, 0, diceElevation);
+    s.ambientMaterial(166, 199, 255);
+    s.specularMaterial(255);
+    s.stroke(210);
+    s.strokeWeight(1);
+    s.box(diceSize, diceSize, diceSize);
+
+    s.push();
+    s.noStroke();
+    s.fill(35);
+    const pipZ = diceSize / 2 - pipRadius * 0.15;
+    pipPositions.forEach(([offsetX, offsetY]) => {
+      s.push();
+      s.translate(offsetX * pipGap, offsetY * pipGap, pipZ);
+      s.sphere(pipRadius, 16, 12);
+      s.pop();
+    });
+    s.pop();
+    s.pop();
+  };
 
   const loadSolutions = async (): Promise<void> => {
     try {
@@ -58,6 +130,7 @@ const sketch = (s: p5): void => {
       payload = data;
       if (payload.length === 0) {
         solutionLabel = "No solutions available";
+        refreshInfoLabel();
         return;
       }
 
@@ -77,9 +150,11 @@ const sketch = (s: p5): void => {
       const targetIndex = requested.hasSegment ? requested.zeroBasedIndex : 0;
       selectedGrid = payload[targetIndex];
       solutionLabel = `Solution ${targetIndex + 1} of ${payload.length}`;
+      refreshInfoLabel();
     } catch (error) {
       console.error(error);
       solutionLabel = "Unable to load solutions";
+      refreshInfoLabel();
     }
   };
 
@@ -90,8 +165,6 @@ const sketch = (s: p5): void => {
   s.setup = (): void => {
     s.createCanvas(window.innerWidth, window.innerHeight, s.WEBGL);
     s.angleMode(s.DEGREES);
-    s.textFont("Helvetica", 18);
-    s.textAlign(s.CENTER, s.CENTER);
     if (window.devicePixelRatio > 1) {
       s.pixelDensity(window.devicePixelRatio);
     }
@@ -118,7 +191,6 @@ const sketch = (s: p5): void => {
       for (let col = 0; col < 8; col += 1) {
         const value = selectedGrid[row][col];
         const isFilled = value === "#";
-        const boxDepth = cellSize * 0.25;
 
         s.push();
         const columnOffset = col * (cellSize + cellSpacing);
@@ -132,6 +204,8 @@ const sketch = (s: p5): void => {
         s.stroke(40);
         s.strokeWeight(1);
         s.box(cellSize, cellSize, boxDepth);
+
+        drawDiceForCell(row, col);
         s.pop();
       }
     }
@@ -139,21 +213,12 @@ const sketch = (s: p5): void => {
     s.pop();
   };
 
-  const drawOverlayText = (): void => {
-    s.push();
-    s.resetMatrix();
-    s.fill(255);
-    s.textSize(22);
-    s.text(solutionLabel, 0, -s.height / 2 + 30);
-    s.pop();
-  };
-
   s.draw = (): void => {
     s.background(18);
     s.ambientLight(60);
     s.directionalLight(255, 255, 255, 0, 1, 0);
+    s.orbitControl();
     drawGrid();
-    drawOverlayText();
   };
 };
 
