@@ -4,7 +4,7 @@ export const loadSolutions = async (
   requested: RequestedGoal
 ): Promise<SolutionLoadResult> => {
   try {
-    const response = await fetch("/solutions.json");
+    const response = await fetch(`${import.meta.env.BASE_URL}solutions.json`);
     if (!response.ok) {
       throw new Error(`Failed to load solutions.json (${response.status})`);
     }
