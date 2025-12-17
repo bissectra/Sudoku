@@ -186,54 +186,53 @@ def write_solutions_with_scores(path: str = "solution.txt") -> None:
 
 
 def write_solutions_json(path: str = "solutions.json") -> None:
-        """Gera um arquivo JSON com todas as soluções ordenadas, sem métricas.
+    """Generate a JSON file with all ordered solutions, without metrics.
 
-        Estrutura do JSON:
+    JSON structure:
+    {
+      "number_of_solutions": int,
+      "solutions": [
         {
-            "number_of_solutions": int,
-            "solutions": [
-                {
-                    "rank": int,
-                    "grid": ["........", ...]  // 8 strings, cada uma representando uma linha
-                },
-                ...
-            ]
-        }
-        """
+          "rank": int,
+          "grid": ["........", ...]  # 8 strings, each representing a row
+        },
+        ...
+      ]
+    }
+    """
 
-        solutions = find_solutions()
-        scored: list[tuple[dict[str, float | int], int, Grid]] = []
-        for idx, sol in enumerate(solutions, start=1):
-                grid = build_grid(sol)
-                breakdown = prettiness_score(grid)
-                scored.append((breakdown, idx, grid))
+    solutions = find_solutions()
+    scored: list[tuple[dict[str, float | int], int, Grid]] = []
+    for idx, sol in enumerate(solutions, start=1):
+        grid = build_grid(sol)
+        breakdown = prettiness_score(grid)
+        scored.append((breakdown, idx, grid))
 
-        # Ordenação idêntica ao texto: por transições desc (negativo), avg_dist asc, std asc, depois índice
-        scored.sort(key=lambda x: (
-                -x[0]["transitions"],
-                x[0]["avg_dist"],
-                x[0]["std"],
-                x[1],
-        ))
+    # Same ordering as text: transitions desc, avg_dist asc, std asc, then index
+    scored.sort(key=lambda x: (
+        -x[0]["transitions"],
+        x[0]["avg_dist"],
+        x[0]["std"],
+        x[1],
+    ))
 
-        output = {
-                "number_of_solutions": len(scored),
-                "solutions": []
-        }
+    output = {
+        "number_of_solutions": len(scored),
+        "solutions": []
+    }
 
-        for new_idx, (_score, _orig_idx, grid) in enumerate(scored, start=1):
-            output["solutions"].append({
-                "rank": new_idx,
-                "grid": grid,
-            })
+    for new_idx, (_score, _orig_idx, grid) in enumerate(scored, start=1):
+        output["solutions"].append({
+            "rank": new_idx,
+            "grid": grid,
+        })
 
-        with open(path, "w", encoding="utf-8") as f:
-                json.dump(output, f, ensure_ascii=False, indent=2)
-        print(f"Wrote sorted solutions (JSON) to {path}")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+    print(f"Wrote sorted solutions (JSON) to {path}")
 
 
 def main() -> None:
-    # Gera JSON em vez de .txt conforme solicitado
     write_solutions_json("solutions.json")
 
 
