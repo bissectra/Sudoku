@@ -1,6 +1,8 @@
 import {
   CubeOrientation,
   DICE_ROTATIONS,
+  DICE_FACE_ORIENTATION_BY_VALUE,
+  ORIENTATIONS_BY_TOP,
   Orientation,
   ORIENTATION_OPPOSITE,
 } from "./orientation";
@@ -8,6 +10,7 @@ import type { DiceRotation, Grid, RollingAnimation, RollingState } from "./types
 
 const RANDOM_SEED = 0xdeadbeef;
 const ROLL_DURATION_MS = 320;
+const DIGITS = [1, 2, 3, 4, 5, 6];
 
 export class DiceController {
   public readonly diceCellsMask: boolean[];
@@ -43,6 +46,85 @@ export class DiceController {
     return orientation;
   }
 
+  private shuffleArray<T>(items: T[]): T[] {
+    const array = [...items];
+    for (let i = array.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(this.seededRandom() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  private pickRandomElement<T>(items: T[]): T {
+    const index = Math.floor(this.seededRandom() * items.length);
+    return items[index];
+  }
+
+  private buildPartialLatinSquare(grid: Grid): Array<number | null> {
+    const height = grid.length;
+    const width = height > 0 ? grid[0].length : this.gridSize;
+    if (height !== this.gridSize || width !== this.gridSize) {
+      throw new Error("Grid dimensions mismatch when building Latin square.");
+    }
+    const assignments: Array<number | null> = new Array(this.totalCells).fill(null);
+    const rowUsed: Set<number>[] = Array.from({ length: height }, () => new Set());
+    const colUsed: Set<number>[] = Array.from({ length: width }, () => new Set());
+    const positions: Array<{ row: number; col: number }> = [];
+    for (let row = 0; row < height; row += 1) {
+      for (let col = 0; col < width; col += 1) {
+        if (grid[row][col] === "#") {
+          positions.push({ row, col });
+        }
+      }
+    }
+    const orderedPositions = this.shuffleArray(positions);
+
+    const solve = (index: number): boolean => {
+      if (index === orderedPositions.length) {
+        return true;
+      }
+      const { row, col } = orderedPositions[index];
+      const options = DIGITS.filter(
+        (digit) => !rowUsed[row].has(digit) && !colUsed[col].has(digit)
+      );
+      const shuffledOptions = this.shuffleArray(options);
+      if (shuffledOptions.length === 0) {
+        return false;
+      }
+      const cellIndex = row * width + col;
+      for (const digit of shuffledOptions) {
+        assignments[cellIndex] = digit;
+        rowUsed[row].add(digit);
+        colUsed[col].add(digit);
+        if (solve(index + 1)) {
+          return true;
+        }
+        rowUsed[row].delete(digit);
+        colUsed[col].delete(digit);
+        assignments[cellIndex] = null;
+      }
+      return false;
+    };
+
+    if (!solve(0)) {
+      throw new Error("Unable to complete Latin square for that grid.");
+    }
+
+    return assignments;
+  }
+
+  private randomOrientationForTopValue(value: number): CubeOrientation {
+    const topOrientation = DICE_FACE_ORIENTATION_BY_VALUE[value];
+    if (!topOrientation) {
+      throw new Error(`Unsupported dice face value: ${value}`);
+    }
+    const candidates = ORIENTATIONS_BY_TOP[topOrientation];
+    if (!candidates || candidates.length === 0) {
+      throw new Error(`No orientations defined for top face ${topOrientation}`);
+    }
+    return this.pickRandomElement(candidates);
+  }
+
   private getTargetCellIndex(cellIndex: number, rotation: DiceRotation): number | null {
     const row = Math.floor(cellIndex / this.gridSize);
     const col = cellIndex % this.gridSize;
@@ -76,13 +158,20 @@ export class DiceController {
   }
 
   setDiceMaskFromGrid(grid: Grid): void {
-    for (let row = 0; row < this.gridSize; row += 1) {
-      for (let col = 0; col < this.gridSize; col += 1) {
+    const latinAssignment = this.buildPartialLatinSquare(grid);
+    const height = grid.length;
+    const width = height > 0 ? grid[0].length : this.gridSize;
+    for (let row = 0; row < height; row += 1) {
+      for (let col = 0; col < width; col += 1) {
         const cellIndex = row * this.gridSize + col;
         const hasDice = grid[row][col] === "#";
         this.diceCellsMask[cellIndex] = hasDice;
         if (hasDice) {
-          this.diceOrientations[cellIndex] = this.randomDiceOrientation();
+          const digit = latinAssignment[cellIndex];
+          if (digit === null) {
+            throw new Error("Dice cell missing top-face digit after Latin square generation.");
+          }
+          this.diceOrientations[cellIndex] = this.randomOrientationForTopValue(digit);
         }
       }
     }

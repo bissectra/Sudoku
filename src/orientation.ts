@@ -20,6 +20,27 @@ export const ORIENTATION_OPPOSITE: Record<Orientation, Orientation> = {
   [Orientation.WEST]: Orientation.EAST,
 };
 
+export type DiceFaceDefinition = {
+  orientation: Orientation;
+  normal: [number, number, number];
+  value: number;
+};
+
+export const DICE_FACE_DEFINITIONS: DiceFaceDefinition[] = [
+  { orientation: Orientation.TOP, normal: [0, 0, 1], value: 1 },
+  { orientation: Orientation.NORTH, normal: [0, 1, 0], value: 2 },
+  { orientation: Orientation.EAST, normal: [1, 0, 0], value: 3 },
+  { orientation: Orientation.WEST, normal: [-1, 0, 0], value: 4 },
+  { orientation: Orientation.SOUTH, normal: [0, -1, 0], value: 5 },
+  { orientation: Orientation.BOTTOM, normal: [0, 0, -1], value: 6 },
+];
+
+export const DICE_FACE_ORIENTATION_BY_VALUE: Record<number, Orientation> =
+  DICE_FACE_DEFINITIONS.reduce<Record<number, Orientation>>((acc, face) => {
+    acc[face.value] = face.orientation;
+    return acc;
+  }, {} as Record<number, Orientation>);
+
 const XY_ORIENTATIONS: Array<[Orientation, Orientation, Orientation]> = [
   [Orientation.EAST, Orientation.NORTH, Orientation.TOP],
   [Orientation.EAST, Orientation.SOUTH, Orientation.BOTTOM],
@@ -113,6 +134,17 @@ const DEFAULT_ORIENTATION = CubeOrientation.identity();
 const ALL_ORIENTATIONS = XY_ORIENTATIONS.map(
   ([x, y]) => new CubeOrientation(x, y)
 );
+
+export const ORIENTATIONS_BY_TOP: Record<Orientation, CubeOrientation[]> = (() => {
+  const mapping = {} as Record<Orientation, CubeOrientation[]>;
+  Object.values(Orientation).forEach((orientation) => {
+    mapping[orientation as Orientation] = [];
+  });
+  for (const orientation of ALL_ORIENTATIONS) {
+    mapping[orientation.z].push(orientation);
+  }
+  return mapping;
+})();
 
 const ORIENTATION_INDEX_BY_KEY = new Map<string, number>();
 ALL_ORIENTATIONS.forEach((orientation, index) => {
