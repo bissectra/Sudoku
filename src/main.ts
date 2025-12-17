@@ -66,11 +66,33 @@ const sketch = (s: p5): void => {
   const requested = parseRequestedIndex();
 
   // Dimensions for the drawing grid
+  const GRID_SIZE = 8;
+  const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
   const cellSize = 50;
   const cellSpacing = 8;
   const boxDepth = cellSize * 0.25;
-  const gridDimension = cellSize * 8 + cellSpacing * 7;
+  const gridDimension = cellSize * GRID_SIZE + cellSpacing * (GRID_SIZE - 1);
   const lightColor = [240, 230, 255];
+
+  const RANDOM_SEED = 0xdeadbeef;
+  let rngState = RANDOM_SEED;
+  const seededRandom = (): number => {
+    rngState = (rngState * 1664525 + 1013904223) >>> 0;
+    return rngState / 0x100000000;
+  };
+
+  const axisOptions = [0, 90, 180, 270];
+  const randomAxisRotation = (): number =>
+    axisOptions[Math.floor(seededRandom() * axisOptions.length)];
+  const diceCellsMask = Array.from({ length: TOTAL_CELLS }, () => seededRandom() < 0.45);
+  if (!diceCellsMask.some(Boolean)) {
+    diceCellsMask[0] = true;
+  }
+  const diceOrientations = diceCellsMask.map(() => ({
+    x: randomAxisRotation(),
+    y: randomAxisRotation(),
+    z: randomAxisRotation(),
+  }));
 
   const dicePipPattern: Record<number, [number, number][]> = {
     1: [[0, 0]],
@@ -127,11 +149,11 @@ const sketch = (s: p5): void => {
     // Draw pips for each face
     const faceValues = [1, 2, 3, 4, 5, 6];
     const faceNormals = [
+      [0, 1, 0], // top
       [0, 0, 1], // front
       [1, 0, 0], // right
-      [0, 0, -1], // back
       [-1, 0, 0], // left
-      [0, 1, 0], // top
+      [0, 0, -1], // back
       [0, -1, 0], // bottom
     ];
 
@@ -174,6 +196,7 @@ const sketch = (s: p5): void => {
   ): void => {
     const diceSize = cellSize * 0.8;
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
+    const orientation = diceOrientations[cellIndex];
 
     s.push();
     s.translate(0, 0, diceElevation);
@@ -183,6 +206,9 @@ const sketch = (s: p5): void => {
     s.strokeWeight(1);
 
     s.push();
+    s.rotateX(orientation.x);
+    s.rotateY(orientation.y);
+    s.rotateZ(orientation.z);
     s.scale(diceSize);
     drawDice();
     s.pop();
@@ -316,8 +342,12 @@ const sketch = (s: p5): void => {
     let bestHoverIndex: number | null = null;
     let bestHoverDistance = hoverThreshold;
 
-    for (let row = 0; row < 8; row += 1) {
-      for (let col = 0; col < 8; col += 1) {
+    for (let row = 0; row < GRID_SIZE; row += 1) {
+      for (let col = 0; col < GRID_SIZE; col += 1) {
+        const cellIndex = row * GRID_SIZE + col;
+        if (!diceCellsMask[cellIndex]) {
+          continue;
+        }
         const hoverPos = projectCellCenter(row, col);
         if (!hoverPos) {
           continue;
@@ -328,13 +358,13 @@ const sketch = (s: p5): void => {
         );
         if (hoverDistance < bestHoverDistance) {
           bestHoverDistance = hoverDistance;
-          bestHoverIndex = row * 8 + col;
+          bestHoverIndex = cellIndex;
         }
       }
     }
 
-    for (let row = 0; row < 8; row += 1) {
-      for (let col = 0; col < 8; col += 1) {
+    for (let row = 0; row < GRID_SIZE; row += 1) {
+      for (let col = 0; col < GRID_SIZE; col += 1) {
         const value = selectedGrid[row][col];
         const isFilled = value === "#";
 
@@ -351,10 +381,13 @@ const sketch = (s: p5): void => {
         s.strokeWeight(1);
         s.box(cellSize, cellSize, boxDepth);
 
-        const cellIndex = row * 8 + col;
+        const cellIndex = row * GRID_SIZE + col;
 
-        const isHovered = bestHoverIndex === cellIndex;
-        drawDiceForCell(cellIndex, isHovered);
+        const shouldRenderDice = diceCellsMask[cellIndex];
+        const isHovered = shouldRenderDice && bestHoverIndex === cellIndex;
+        if (shouldRenderDice) {
+          drawDiceForCell(cellIndex, isHovered);
+        }
         s.pop();
       }
     }
@@ -373,7 +406,7 @@ const sketch = (s: p5): void => {
 
   
     // uncomment to enable mouse orbit control
-    // s.orbitControl();
+    s.orbitControl();
     s.push();
     s.scale(1.5);
     drawGrid();
