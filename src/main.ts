@@ -79,8 +79,7 @@ const sketch = (s: p5): void => {
     const gridDimension = cellSize * 8 + cellSpacing * 7;
 
     s.push();
-    s.rotateX(-30);
-    s.rotateY(45);
+    s.rotateX(60);
     s.translate(-gridDimension / 2 + cellSize / 2, -gridDimension / 2 + cellSize / 2, 0);
 
     for (let row = 0; row < 8; row += 1) {
