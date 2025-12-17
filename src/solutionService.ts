@@ -22,7 +22,8 @@ export const loadSolutions = async (
       };
     }
 
-    const fallbackPath = "/1";
+    const baseUrl = import.meta.env.BASE_URL ?? "/";
+    const fallbackPath = `${baseUrl}1`;
     const invalidSegment =
       !requested.segmentCountValid ||
       requested.parsedGoal === null ||
