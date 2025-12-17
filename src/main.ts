@@ -1,20 +1,25 @@
 import p5 from "p5";
 import {
+  DiceRotation,
   Grid,
   RollingAnimation,
-  RollingState,
-  SolutionPayload,
-  DiceRotation,
 } from "./types";
-import {
-  CubeOrientation,
-  DICE_ROTATIONS,
-  getRotationSequence,
-} from "./orientation";
+import { getRotationSequence } from "./orientation";
 import { applyRotationTransform, drawDice } from "./diceDrawing";
 import { parseRequestedIndex } from "./request";
-
-const ROLL_DURATION_MS = 320;
+import { DiceController } from "./diceController";
+import {
+  BOARD_ROTATION_X,
+  BOX_DEPTH,
+  CELL_SIZE,
+  CELL_SPACING,
+  GRID_DIMENSION,
+  GRID_SIZE,
+  HOVER_THRESHOLD,
+  LIGHT_COLOR,
+  DRAG_DISTANCE_THRESHOLD,
+} from "./boardLayout";
+import { loadSolutions } from "./solutionService";
 
 type RendererWithCamera = {
   _curCamera?: {
@@ -30,7 +35,6 @@ type RendererWithCamera = {
 type RendererAwareP5 = p5 & { _renderer?: RendererWithCamera };
 
 const sketch = (s: p5): void => {
-  let payload: SolutionPayload | null = null;
   let selectedGrid: Grid | null = null;
   let solutionLabel = "Loading…";
   const refreshInfoLabel = (): void => {
@@ -40,73 +44,21 @@ const sketch = (s: p5): void => {
     }
   };
   refreshInfoLabel();
-  const requested = parseRequestedIndex();
 
-  // Dimensions for the drawing grid
-  const GRID_SIZE = 8;
-  const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
-  const cellSize = 50;
-  const cellSpacing = 8;
-  const boxDepth = cellSize * 0.25;
-  const gridDimension = cellSize * GRID_SIZE + cellSpacing * (GRID_SIZE - 1);
-  const lightColor = [240, 230, 255];
-  const HOVER_THRESHOLD = cellSize * 0.8;
-  const DRAG_DISTANCE_THRESHOLD = 20;
+  const requested = parseRequestedIndex();
+  const diceController = new DiceController(GRID_SIZE);
+  const diceCellsMask = diceController.diceCellsMask;
+  const cellSize = CELL_SIZE;
+  const cellSpacing = CELL_SPACING;
+  const boxDepth = BOX_DEPTH;
+  const gridDimension = GRID_DIMENSION;
+  const lightColor = LIGHT_COLOR;
+  const hoverThreshold = HOVER_THRESHOLD;
+  const dragDistanceThreshold = DRAG_DISTANCE_THRESHOLD;
   let activeDragCell: number | null = null;
   let lastDragPoint: { x: number; y: number } | null = null;
   let dragRotationApplied = false;
   let hoveredDiceCell: number | null = null;
-  let rollingState: RollingState | null = null;
-
-  const RANDOM_SEED = 0xdeadbeef;
-  let rngState = RANDOM_SEED;
-  const seededRandom = (): number => {
-    rngState = (rngState * 1664525 + 1013904223) >>> 0;
-    return rngState / 0x100000000;
-  };
-  const randomDiceOrientation = (): CubeOrientation => {
-    let orientation = CubeOrientation.identity();
-    const rotationCount = 1 + Math.floor(seededRandom() * 3);
-    for (let i = 0; i < rotationCount; i += 1) {
-      const rotation = DICE_ROTATIONS[Math.floor(seededRandom() * DICE_ROTATIONS.length)];
-      orientation = orientation.roll(rotation);
-    }
-    return orientation;
-  };
-  const diceCellsMask = Array.from({ length: TOTAL_CELLS }, () => seededRandom() < 0.45);
-  if (!diceCellsMask.some(Boolean)) {
-    diceCellsMask[0] = true;
-  }
-  const diceOrientations: CubeOrientation[] = diceCellsMask.map(() => randomDiceOrientation());
-
-  const computeRollingAnimation = (): RollingAnimation | null => {
-    if (rollingState === null) {
-      return null;
-    }
-    const elapsed = performance.now() - rollingState.startTime;
-    return {
-      ...rollingState,
-      progress: Math.min(1, elapsed / ROLL_DURATION_MS),
-    };
-  };
-
-  const startRollingAnimation = (cellIndex: number, rotation: DiceRotation): void => {
-    rollingState = {
-      cellIndex,
-      rotation,
-      startTime: performance.now(),
-    };
-  };
-
-  const finalizeRollingAnimation = (): void => {
-    if (rollingState === null) {
-      return;
-    }
-    diceOrientations[rollingState.cellIndex] = diceOrientations[
-      rollingState.cellIndex
-    ].roll(rollingState.rotation);
-    rollingState = null;
-  };
 
   const drawDiceForCell = (
     cellIndex: number,
@@ -115,7 +67,11 @@ const sketch = (s: p5): void => {
   ): void => {
     const diceSize = cellSize * 0.8;
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
-    const rotationSequence = getRotationSequence(diceOrientations[cellIndex]).slice().reverse();
+    const rotationSequence = getRotationSequence(
+      diceController.diceOrientations[cellIndex]
+    )
+      .slice()
+      .reverse();
 
     s.push();
     s.translate(0, 0, diceElevation);
@@ -152,113 +108,10 @@ const sketch = (s: p5): void => {
     s.pop();
   };
 
-  const loadSolutions = async (): Promise<void> => {
-    try {
-      const response = await fetch("/solutions.json");
-      if (!response.ok) {
-        throw new Error(`Failed to load solutions.json (${response.status})`);
-      }
-      const data: SolutionPayload = await response.json();
-      payload = data;
-      if (payload.length === 0) {
-        solutionLabel = "No solutions available";
-        refreshInfoLabel();
-        return;
-      }
-
-      const invalidSegment =
-        requested.hasSegment &&
-        (requested.parsedValue === null ||
-          requested.parsedValue < 1 ||
-          requested.parsedValue > payload.length);
-
-      if (invalidSegment) {
-        if (window.location.pathname !== "/1") {
-          window.location.replace("/1");
-        }
-        return;
-      }
-
-      const targetIndex = requested.hasSegment ? requested.zeroBasedIndex : 0;
-      selectedGrid = payload[targetIndex];
-      solutionLabel = `Solution ${targetIndex + 1} of ${payload.length}`;
-      refreshInfoLabel();
-    } catch (error) {
-      console.error(error);
-      solutionLabel = "Unable to load solutions";
-      refreshInfoLabel();
-    }
-  };
-
-  s.preload = (): void => {
-    // Keep placeholder while we fetch async data
-  };
-
-  s.setup = (): void => {
-    s.createCanvas(window.innerWidth, window.innerHeight, s.WEBGL);
-    s.angleMode(s.DEGREES);
-    if (window.devicePixelRatio > 1) {
-      s.pixelDensity(window.devicePixelRatio);
-    }
-    s.noStroke();
-    loadSolutions();
-  };
-
-  s.windowResized = (): void => {
-    s.resizeCanvas(window.innerWidth, window.innerHeight);
-  };
-
-  s.mousePressed = (): void => {
-    if (rollingState !== null) {
-      return;
-    }
-    if (hoveredDiceCell !== null && diceCellsMask[hoveredDiceCell]) {
-      activeDragCell = hoveredDiceCell;
-      lastDragPoint = { x: s.mouseX, y: s.mouseY };
-      dragRotationApplied = false;
-    }
-  };
-
-  s.mouseDragged = (): void => {
-    if (rollingState !== null) {
-      return;
-    }
-    if (activeDragCell === null || lastDragPoint === null) {
-      return;
-    }
-    if (dragRotationApplied) {
-      return;
-    }
-    const dx = s.mouseX - lastDragPoint.x;
-    const dy = s.mouseY - lastDragPoint.y;
-    if (Math.hypot(dx, dy) < DRAG_DISTANCE_THRESHOLD) {
-      return;
-    }
-    const rotation: DiceRotation =
-      Math.abs(dx) > Math.abs(dy)
-        ? dx > 0
-          ? "right"
-          : "left"
-        : dy > 0
-        ? "down"
-        : "up";
-    startRollingAnimation(activeDragCell, rotation);
-    dragRotationApplied = true;
-    lastDragPoint = { x: s.mouseX, y: s.mouseY };
-  };
-
-  s.mouseReleased = (): void => {
-    activeDragCell = null;
-    lastDragPoint = null;
-    dragRotationApplied = false;
-  };
-
   const drawGrid = (rollingAnimation: RollingAnimation | null): void => {
     if (!selectedGrid) {
       return;
     }
-
-    const BOARD_ROTATION_X = 30;
 
     s.push();
     s.rotateX(BOARD_ROTATION_X);
@@ -306,7 +159,7 @@ const sketch = (s: p5): void => {
     };
 
     let bestHoverIndex: number | null = null;
-    let bestHoverDistance = HOVER_THRESHOLD;
+    let bestHoverDistance = hoverThreshold;
 
     for (let row = 0; row < GRID_SIZE; row += 1) {
       for (let col = 0; col < GRID_SIZE; col += 1) {
@@ -341,8 +194,8 @@ const sketch = (s: p5): void => {
         const rowOffset = row * (cellSize + cellSpacing);
         s.translate(columnOffset, rowOffset, boxDepth / 2);
 
-        const filledColor = s.color(70, 130, 180); // Steel Blue
-        const emptyColor = s.color(240, 248, 255); // Alice Blue
+        const filledColor = s.color(70, 130, 180);
+        const emptyColor = s.color(240, 248, 255);
 
         s.fill(isFilled ? filledColor : emptyColor);
         s.stroke(40);
@@ -350,7 +203,6 @@ const sketch = (s: p5): void => {
         s.box(cellSize, cellSize, boxDepth);
 
         const cellIndex = row * GRID_SIZE + col;
-
         const shouldRenderDice = diceCellsMask[cellIndex];
         const isHovered = shouldRenderDice && bestHoverIndex === cellIndex;
         if (shouldRenderDice) {
@@ -363,25 +215,103 @@ const sketch = (s: p5): void => {
     s.pop();
   };
 
+  const loadAndSelectSolution = async (): Promise<void> => {
+    const result = await loadSolutions(requested);
+    if (result.redirectTo) {
+      if (window.location.pathname !== result.redirectTo) {
+        window.location.replace(result.redirectTo);
+      }
+      return;
+    }
+    if (result.grid) {
+      selectedGrid = result.grid;
+    }
+    solutionLabel = result.label || solutionLabel;
+    refreshInfoLabel();
+  };
+
+  s.preload = (): void => {
+    // Keep placeholder while we fetch async data
+  };
+
+  s.setup = (): void => {
+    s.createCanvas(window.innerWidth, window.innerHeight, s.WEBGL);
+    s.angleMode(s.DEGREES);
+    if (window.devicePixelRatio > 1) {
+      s.pixelDensity(window.devicePixelRatio);
+    }
+    s.noStroke();
+    loadAndSelectSolution();
+  };
+
+  s.windowResized = (): void => {
+    s.resizeCanvas(window.innerWidth, window.innerHeight);
+  };
+
+  s.mousePressed = (): void => {
+    if (diceController.getRollingState() !== null) {
+      return;
+    }
+    if (hoveredDiceCell !== null && diceCellsMask[hoveredDiceCell]) {
+      activeDragCell = hoveredDiceCell;
+      lastDragPoint = { x: s.mouseX, y: s.mouseY };
+      dragRotationApplied = false;
+    }
+  };
+
+  s.mouseDragged = (): void => {
+    if (diceController.getRollingState() !== null) {
+      return;
+    }
+    if (activeDragCell === null || lastDragPoint === null) {
+      return;
+    }
+    if (dragRotationApplied) {
+      return;
+    }
+    const dx = s.mouseX - lastDragPoint.x;
+    const dy = s.mouseY - lastDragPoint.y;
+    if (Math.hypot(dx, dy) < dragDistanceThreshold) {
+      return;
+    }
+    const rotation: DiceRotation =
+      Math.abs(dx) > Math.abs(dy)
+        ? dx > 0
+          ? "right"
+          : "left"
+        : dy > 0
+        ? "down"
+        : "up";
+    diceController.startRollingAnimation(activeDragCell, rotation);
+    dragRotationApplied = true;
+    lastDragPoint = { x: s.mouseX, y: s.mouseY };
+  };
+
+  s.mouseReleased = (): void => {
+    activeDragCell = null;
+    lastDragPoint = null;
+    dragRotationApplied = false;
+  };
+
   s.draw = (): void => {
     s.background(18);
     const [lightR, lightG, lightB] = lightColor;
     const ambientStrength = 0.4;
-    s.ambientLight(lightR * ambientStrength, lightG * ambientStrength, lightB * ambientStrength);
+    s.ambientLight(
+      lightR * ambientStrength,
+      lightG * ambientStrength,
+      lightB * ambientStrength
+    );
 
-    // Directional light
     s.directionalLight(lightR, lightG, lightB, 1, 0, -1);
 
-  
-    // uncomment to enable mouse orbit control
-    // s.orbitControl();
-    const currentRollingAnimation = computeRollingAnimation();
+    const currentRollingAnimation = diceController.computeRollingAnimation();
     s.push();
     s.scale(1.5);
     drawGrid(currentRollingAnimation);
     s.pop();
     if (currentRollingAnimation && currentRollingAnimation.progress >= 1) {
-      finalizeRollingAnimation();
+      diceController.finalizeRollingAnimation();
     }
   };
 };

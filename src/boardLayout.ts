@@ -1,0 +1,10 @@
+export const GRID_SIZE = 8;
+export const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
+export const CELL_SIZE = 50;
+export const CELL_SPACING = 8;
+export const BOX_DEPTH = CELL_SIZE * 0.25;
+export const GRID_DIMENSION = CELL_SIZE * GRID_SIZE + CELL_SPACING * (GRID_SIZE - 1);
+export const LIGHT_COLOR = [240, 230, 255] as const;
+export const HOVER_THRESHOLD = CELL_SIZE * 0.8;
+export const DRAG_DISTANCE_THRESHOLD = 20;
+export const BOARD_ROTATION_X = 30;
