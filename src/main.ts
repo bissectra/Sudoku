@@ -21,6 +21,25 @@ const getLayoutParam = (): string | null => {
 const decodeOrientationLayout = (layout: string): Array<CubeOrientation | null> =>
   Array.from(layout, (char) => (char === "_" ? null : getOrientationByCode(char)));
 
+const updateUrlLayoutParam = (layout: string | null): void => {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const url = new URL(window.location.href);
+  const current = url.searchParams.get(URL_LAYOUT_PARAM);
+  if (layout && layout.length > 0) {
+    if (current !== layout) {
+      url.searchParams.set(URL_LAYOUT_PARAM, layout);
+      window.history.replaceState({}, "", url);
+    }
+    return;
+  }
+  if (current !== null) {
+    url.searchParams.delete(URL_LAYOUT_PARAM);
+    window.history.replaceState({}, "", url);
+  }
+};
+
 const sketch = (s: p5): void => {
     let goalGrid: Grid | null = null;
   let solutionLabel = "Loading…";
@@ -63,8 +82,11 @@ const sketch = (s: p5): void => {
     if (result.startGrid) {
       diceController.setDiceMaskFromGrid(result.startGrid);
       if (result.startOrientationLayout !== null) {
+        updateUrlLayoutParam(result.startOrientationLayout);
         const orientations = decodeOrientationLayout(result.startOrientationLayout);
         diceController.setDiceOrientations(orientations);
+      } else {
+        updateUrlLayoutParam(null);
       }
       logInitialDiceTopFaces(result.startGrid);
     }
