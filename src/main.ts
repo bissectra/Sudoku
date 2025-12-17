@@ -76,6 +76,12 @@ const sketch = (s: p5): void => {
   const boxDepth = cellSize * 0.25;
   const gridDimension = cellSize * GRID_SIZE + cellSpacing * (GRID_SIZE - 1);
   const lightColor = [240, 230, 255];
+  const HOVER_THRESHOLD = cellSize * 0.8;
+  const DRAG_DISTANCE_THRESHOLD = 20;
+  let activeDragCell: number | null = null;
+  let lastDragPoint: { x: number; y: number } | null = null;
+  let dragRotationApplied = false;
+  let hoveredDiceCell: number | null = null;
 
   const RANDOM_SEED = 0xdeadbeef;
   let rngState = RANDOM_SEED;
@@ -302,6 +308,45 @@ const sketch = (s: p5): void => {
     s.resizeCanvas(window.innerWidth, window.innerHeight);
   };
 
+  s.mousePressed = (): void => {
+    if (hoveredDiceCell !== null && diceCellsMask[hoveredDiceCell]) {
+      activeDragCell = hoveredDiceCell;
+      lastDragPoint = { x: s.mouseX, y: s.mouseY };
+      dragRotationApplied = false;
+    }
+  };
+
+  s.mouseDragged = (): void => {
+    if (activeDragCell === null || lastDragPoint === null) {
+      return;
+    }
+    if (dragRotationApplied) {
+      return;
+    }
+    const dx = s.mouseX - lastDragPoint.x;
+    const dy = s.mouseY - lastDragPoint.y;
+    if (Math.hypot(dx, dy) < DRAG_DISTANCE_THRESHOLD) {
+      return;
+    }
+    const rotation: DiceRotation =
+      Math.abs(dx) > Math.abs(dy)
+        ? dx > 0
+          ? "right"
+          : "left"
+        : dy > 0
+        ? "down"
+        : "up";
+    diceOrientations[activeDragCell].push(rotation);
+    dragRotationApplied = true;
+    lastDragPoint = { x: s.mouseX, y: s.mouseY };
+  };
+
+  s.mouseReleased = (): void => {
+    activeDragCell = null;
+    lastDragPoint = null;
+    dragRotationApplied = false;
+  };
+
   const drawGrid = (): void => {
     if (!selectedGrid) {
       return;
@@ -354,9 +399,8 @@ const sketch = (s: p5): void => {
       };
     };
 
-    const hoverThreshold = cellSize * 0.8;
     let bestHoverIndex: number | null = null;
-    let bestHoverDistance = hoverThreshold;
+    let bestHoverDistance = HOVER_THRESHOLD;
 
     for (let row = 0; row < GRID_SIZE; row += 1) {
       for (let col = 0; col < GRID_SIZE; col += 1) {
@@ -378,6 +422,8 @@ const sketch = (s: p5): void => {
         }
       }
     }
+
+    hoveredDiceCell = bestHoverIndex;
 
     for (let row = 0; row < GRID_SIZE; row += 1) {
       for (let col = 0; col < GRID_SIZE; col += 1) {
