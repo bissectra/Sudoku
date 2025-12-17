@@ -108,13 +108,18 @@ const sketch = (s: p5): void => {
 
   const drawDice = (): void => {
     // Dice body
-    s.push();
     s.noStroke();
     s.ambientMaterial(235, 232, 220); // warm ivory
     s.specularMaterial(250);
     s.shininess(20);
     s.box(1);
-    s.pop();
+
+    // Dice edges -- uncomment to enable
+    // s.noFill();
+    // s.stroke(180);
+    // s.strokeWeight(0.5);
+    // s.box(1.01);
+
     const pipRadius = 0.15;
     const faceOffset = 0.5;
     const pipOffset = 0.2;
@@ -167,7 +172,7 @@ const sketch = (s: p5): void => {
     cellIndex: number,
     isHovered: boolean
   ): void => {
-    const diceSize = cellSize * 0.6;
+    const diceSize = cellSize * 0.8;
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
 
     s.push();
@@ -260,7 +265,7 @@ const sketch = (s: p5): void => {
       return;
     }
 
-    const BOARD_ROTATION_X = 45;
+    const BOARD_ROTATION_X = 30;
 
     s.push();
     s.rotateX(BOARD_ROTATION_X);
@@ -360,9 +365,13 @@ const sketch = (s: p5): void => {
   s.draw = (): void => {
     s.background(18);
     const [lightR, lightG, lightB] = lightColor;
-    const lightA = 0.6;
-    // Soft ambient base
-    s.ambientLight(lightR * lightA, lightG * lightA, lightB * lightA);
+    const ambientStrength = 0.4;
+    s.ambientLight(lightR * ambientStrength, lightG * ambientStrength, lightB * ambientStrength);
+
+    // Directional light
+    s.directionalLight(lightR, lightG, lightB, 1, 0, -1);
+
+  
     // uncomment to enable mouse orbit control
     // s.orbitControl();
     s.push();
