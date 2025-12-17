@@ -35,7 +35,7 @@ export class DiceController {
 
   private randomDiceOrientation(): CubeOrientation {
     let orientation = CubeOrientation.identity();
-    const rotationCount = 1 + Math.floor(this.seededRandom() * 3);
+    const rotationCount = 1 + Math.floor(this.seededRandom() * 100);
     for (let i = 0; i < rotationCount; i += 1) {
       const rotation =
         DICE_ROTATIONS[Math.floor(this.seededRandom() * DICE_ROTATIONS.length)];
