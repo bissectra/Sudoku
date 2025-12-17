@@ -55,6 +55,8 @@ const sketch = (s: p5): void => {
   const cellSize = 50;
   const cellSpacing = 8;
   const boxDepth = cellSize * 0.25;
+  const gridDimension = cellSize * 8 + cellSpacing * 7;
+  const lightColor = [240, 230, 255];
 
   const dicePipPattern: Record<number, [number, number][]> = {
     1: [[0, 0]],
@@ -205,8 +207,6 @@ const sketch = (s: p5): void => {
       return;
     }
 
-    const gridDimension = cellSize * 8 + cellSpacing * 7;
-
     s.push();
     s.rotateX(30);
     s.translate(-gridDimension / 2 + cellSize / 2, -gridDimension / 2 + cellSize / 2, 0);
@@ -239,8 +239,13 @@ const sketch = (s: p5): void => {
 
   s.draw = (): void => {
     s.background(18);
-    s.ambientLight(60);
-    s.directionalLight(255, 255, 255, 0, 1, 0);
+    const [lightR, lightG, lightB] = lightColor;
+    s.directionalLight(lightR, lightG, lightB, 1, 0, 0);
+    s.directionalLight(lightR, lightG, lightB, -1, 0, 0);
+    s.directionalLight(lightR, lightG, lightB, 0, 1, 0);
+    s.directionalLight(lightR, lightG, lightB, 0, -1, 0);
+    s.directionalLight(lightR, lightG, lightB, 0, 0, 1);
+    s.directionalLight(lightR, lightG, lightB, 0, 0, -1);
     s.orbitControl();
     s.push();
     s.scale(1.5);
