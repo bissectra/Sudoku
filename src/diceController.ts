@@ -185,6 +185,7 @@ export class DiceController {
         }
       }
     }
+    this.scrambleLatinGrid(10000);
   }
 
   private validateLatinSquare(): { valid: boolean; conflicts: number[] } {
@@ -218,6 +219,72 @@ export class DiceController {
       colMaps[col].set(value, index);
     }
     return { valid: true, conflicts: [] };
+  }
+
+  private getDiceIndices(): number[] {
+    const indices: number[] = [];
+    for (let index = 0; index < this.totalCells; index += 1) {
+      if (this.diceCellsMask[index]) {
+        indices.push(index);
+      }
+    }
+    return indices;
+  }
+
+  private applyImmediateMove(
+    sourceIndex: number,
+    targetIndex: number,
+    rotation: DiceRotation
+  ): { sourceOrientation: CubeOrientation; targetOrientation: CubeOrientation } {
+    const sourceOrientation = this.diceOrientations[sourceIndex];
+    const targetOrientation = this.diceOrientations[targetIndex];
+    this.diceOrientations[targetIndex] = sourceOrientation.roll(rotation);
+    this.diceCellsMask[sourceIndex] = false;
+    this.diceCellsMask[targetIndex] = true;
+    return { sourceOrientation, targetOrientation };
+  }
+
+  private revertImmediateMove(
+    sourceIndex: number,
+    targetIndex: number,
+    saved: { sourceOrientation: CubeOrientation; targetOrientation: CubeOrientation }
+  ): void {
+    this.diceOrientations[sourceIndex] = saved.sourceOrientation;
+    this.diceOrientations[targetIndex] = saved.targetOrientation;
+    this.diceCellsMask[sourceIndex] = true;
+    this.diceCellsMask[targetIndex] = false;
+  }
+
+  private attemptScrambleMove(cellIndex: number, rotation: DiceRotation): boolean {
+    const targetCellIndex = this.getTargetCellIndex(cellIndex, rotation);
+    if (targetCellIndex === null || this.diceCellsMask[targetCellIndex]) {
+      return false;
+    }
+    const savedState = this.applyImmediateMove(cellIndex, targetCellIndex, rotation);
+    const validation = this.validateLatinSquare();
+    if (!validation.valid) {
+      this.revertImmediateMove(cellIndex, targetCellIndex, savedState);
+      return false;
+    }
+    return true;
+  }
+
+  private scrambleLatinGrid(moveCount: number): void {
+    let applied = 0;
+    let attempts = 0;
+    const maxAttempts = moveCount * 10;
+    while (applied < moveCount && attempts < maxAttempts) {
+      attempts += 1;
+      const diceCells = this.getDiceIndices();
+      if (diceCells.length === 0) {
+        break;
+      }
+      const cellIndex = diceCells[Math.floor(this.seededRandom() * diceCells.length)];
+      const rotation = DICE_ROTATIONS[Math.floor(this.seededRandom() * DICE_ROTATIONS.length)];
+      if (this.attemptScrambleMove(cellIndex, rotation)) {
+        applied += 1;
+      }
+    }
   }
 
   private getTopFaceValueFromOrientation(orientation: CubeOrientation): number {
