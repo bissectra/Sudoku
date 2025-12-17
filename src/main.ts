@@ -1,9 +1,5 @@
 import p5 from "p5";
-import {
-  DiceRotation,
-  Grid,
-  RollingAnimation,
-} from "./types";
+import { Grid, RollingAnimation } from "./types";
 import { getRotationSequence } from "./orientation";
 import { applyRotationTransform, drawDice } from "./diceDrawing";
 import { parseRequestedIndex } from "./request";
@@ -20,6 +16,7 @@ import {
   DRAG_DISTANCE_THRESHOLD,
 } from "./boardLayout";
 import { loadSolutions } from "./solutionService";
+import { InteractionController } from "./interaction";
 
 type RendererWithCamera = {
   _curCamera?: {
@@ -55,10 +52,7 @@ const sketch = (s: p5): void => {
   const lightColor = LIGHT_COLOR;
   const hoverThreshold = HOVER_THRESHOLD;
   const dragDistanceThreshold = DRAG_DISTANCE_THRESHOLD;
-  let activeDragCell: number | null = null;
-  let lastDragPoint: { x: number; y: number } | null = null;
-  let dragRotationApplied = false;
-  let hoveredDiceCell: number | null = null;
+  const interaction = new InteractionController(dragDistanceThreshold);
 
   const drawDiceForCell = (
     cellIndex: number,
@@ -182,7 +176,7 @@ const sketch = (s: p5): void => {
       }
     }
 
-    hoveredDiceCell = bestHoverIndex;
+    interaction.setHover(bestHoverIndex);
 
     for (let row = 0; row < GRID_SIZE; row += 1) {
       for (let col = 0; col < GRID_SIZE; col += 1) {
@@ -204,7 +198,7 @@ const sketch = (s: p5): void => {
 
         const cellIndex = row * GRID_SIZE + col;
         const shouldRenderDice = diceCellsMask[cellIndex];
-        const isHovered = shouldRenderDice && bestHoverIndex === cellIndex;
+        const isHovered = shouldRenderDice && interaction.hoveredDiceCell === cellIndex;
         if (shouldRenderDice) {
           drawDiceForCell(cellIndex, isHovered, rollingAnimation);
         }
@@ -252,10 +246,9 @@ const sketch = (s: p5): void => {
     if (diceController.getRollingState() !== null) {
       return;
     }
-    if (hoveredDiceCell !== null && diceCellsMask[hoveredDiceCell]) {
-      activeDragCell = hoveredDiceCell;
-      lastDragPoint = { x: s.mouseX, y: s.mouseY };
-      dragRotationApplied = false;
+    const hoverCell = interaction.hoveredDiceCell;
+    if (hoverCell !== null && diceCellsMask[hoverCell]) {
+      interaction.startDrag(hoverCell, { x: s.mouseX, y: s.mouseY });
     }
   };
 
@@ -263,34 +256,14 @@ const sketch = (s: p5): void => {
     if (diceController.getRollingState() !== null) {
       return;
     }
-    if (activeDragCell === null || lastDragPoint === null) {
-      return;
+    const move = interaction.recordMovement({ x: s.mouseX, y: s.mouseY });
+    if (move !== null) {
+      diceController.startRollingAnimation(move.cellIndex, move.rotation);
     }
-    if (dragRotationApplied) {
-      return;
-    }
-    const dx = s.mouseX - lastDragPoint.x;
-    const dy = s.mouseY - lastDragPoint.y;
-    if (Math.hypot(dx, dy) < dragDistanceThreshold) {
-      return;
-    }
-    const rotation: DiceRotation =
-      Math.abs(dx) > Math.abs(dy)
-        ? dx > 0
-          ? "right"
-          : "left"
-        : dy > 0
-        ? "down"
-        : "up";
-    diceController.startRollingAnimation(activeDragCell, rotation);
-    dragRotationApplied = true;
-    lastDragPoint = { x: s.mouseX, y: s.mouseY };
   };
 
   s.mouseReleased = (): void => {
-    activeDragCell = null;
-    lastDragPoint = null;
-    dragRotationApplied = false;
+    interaction.resetDrag();
   };
 
   s.draw = (): void => {
