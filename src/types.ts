@@ -2,10 +2,12 @@ export type Grid = string[];
 
 export type SolutionPayload = Grid[];
 
-export type RequestedIndexInfo = {
-  zeroBasedIndex: number;
-  hasSegment: boolean;
-  parsedValue: number | null;
+export type RequestedSolutionPair = {
+  startZeroBased: number;
+  goalZeroBased: number;
+  segmentCountValid: boolean;
+  parsedStart: number | null;
+  parsedGoal: number | null;
 };
 
 export type DiceRotation = "left" | "up" | "right" | "down";
@@ -20,4 +22,11 @@ export type RollingState = {
 
 export type RollingAnimation = RollingState & {
   progress: number;
+};
+
+export type SolutionLoadResult = {
+  startGrid: Grid | null;
+  goalGrid: Grid | null;
+  label: string;
+  redirectTo?: string;
 };

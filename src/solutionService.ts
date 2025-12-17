@@ -1,13 +1,7 @@
-import type { Grid, RequestedIndexInfo, SolutionPayload } from "./types";
-
-export type SolutionLoadResult = {
-  grid: Grid | null;
-  label: string;
-  redirectTo?: string;
-};
+import type { Grid, RequestedSolutionPair, SolutionPayload, SolutionLoadResult } from "./types";
 
 export const loadSolutions = async (
-  requested: RequestedIndexInfo
+  requested: RequestedSolutionPair
 ): Promise<SolutionLoadResult> => {
   try {
     const response = await fetch("/solutions.json");
@@ -16,27 +10,57 @@ export const loadSolutions = async (
     }
     const payload: SolutionPayload = await response.json();
     if (payload.length === 0) {
-      return { grid: null, label: "No solutions available" };
+      return { startGrid: null, goalGrid: null, label: "No solutions available" };
     }
 
+    if (payload.length < 2) {
+      const onlyGrid = payload[0];
+      return {
+        startGrid: onlyGrid,
+        goalGrid: onlyGrid,
+        label: "Need at least two solutions to display start and goal",
+      };
+    }
+
+    const fallbackPath = "/1/2";
     const invalidSegment =
-      requested.hasSegment &&
-      (requested.parsedValue === null ||
-        requested.parsedValue < 1 ||
-        requested.parsedValue > payload.length);
+      !requested.segmentCountValid ||
+      requested.parsedStart === null ||
+      requested.parsedGoal === null ||
+      requested.parsedStart < 1 ||
+      requested.parsedStart > payload.length ||
+      requested.parsedGoal < 1 ||
+      requested.parsedGoal > payload.length;
 
     if (invalidSegment) {
-      return { grid: null, label: "", redirectTo: "/1" };
+      return {
+        startGrid: null,
+        goalGrid: null,
+        label: "",
+        redirectTo: fallbackPath,
+      };
     }
 
-    const targetIndex = requested.hasSegment ? requested.zeroBasedIndex : 0;
-    const label = `Solution ${targetIndex + 1} of ${payload.length}`;
+    const startIndex = requested.startZeroBased;
+    const goalIndex = requested.goalZeroBased;
+
+    if (startIndex === goalIndex) {
+      return {
+        startGrid: null,
+        goalGrid: null,
+        label: "",
+        redirectTo: fallbackPath,
+      };
+    }
+
+    const label = `Start ${startIndex + 1} → Goal ${goalIndex + 1} of ${payload.length}`;
     return {
-      grid: payload[targetIndex],
+      startGrid: payload[startIndex],
+      goalGrid: payload[goalIndex],
       label,
     };
   } catch (error) {
     console.error(error);
-    return { grid: null, label: "Unable to load solutions" };
+    return { startGrid: null, goalGrid: null, label: "Unable to load solutions" };
   }
 };

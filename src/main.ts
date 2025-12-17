@@ -1,14 +1,14 @@
 import p5 from "p5";
 import { Grid } from "./types";
-import { parseRequestedIndex } from "./request";
+import { parseRequestedSolutionPair } from "./request";
 import { DiceController } from "./diceController";
 import { renderGrid } from "./gridRenderer";
 import { loadSolutions } from "./solutionService";
 import { InteractionController } from "./interaction";
 import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
 
-const sketch = (s: p5): void => {
-  let selectedGrid: Grid | null = null;
+  const sketch = (s: p5): void => {
+    let goalGrid: Grid | null = null;
   let solutionLabel = "Loading…";
   const refreshInfoLabel = (): void => {
     const infoEl = document.getElementById("info");
@@ -18,7 +18,7 @@ const sketch = (s: p5): void => {
   };
   refreshInfoLabel();
 
-  const requested = parseRequestedIndex();
+  const requested = parseRequestedSolutionPair();
   const diceController = new DiceController(GRID_SIZE);
   const interaction = new InteractionController(DRAG_DISTANCE_THRESHOLD);
   const lightColor = LIGHT_COLOR;
@@ -31,9 +31,11 @@ const sketch = (s: p5): void => {
       }
       return;
     }
-    if (result.grid) {
-      selectedGrid = result.grid;
-      diceController.setDiceMaskFromGrid(result.grid);
+    if (result.goalGrid) {
+      goalGrid = result.goalGrid;
+    }
+    if (result.startGrid) {
+      diceController.setDiceMaskFromGrid(result.startGrid);
     }
     solutionLabel = result.label || solutionLabel;
     refreshInfoLabel();
@@ -96,7 +98,7 @@ const sketch = (s: p5): void => {
     const currentRollingAnimation = diceController.computeRollingAnimation();
     s.push();
     s.scale(1.5);
-    renderGrid(s, selectedGrid, diceController, interaction, currentRollingAnimation);
+    renderGrid(s, goalGrid, diceController, interaction, currentRollingAnimation);
     s.pop();
     if (currentRollingAnimation && currentRollingAnimation.progress >= 1) {
       diceController.finalizeRollingAnimation();
