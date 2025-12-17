@@ -179,7 +179,7 @@ const sketch = (s: p5): void => {
     cellIndex: number,
     isHovered: boolean
   ): void => {
-    const diceSize = cellSize * 0.8;
+    const diceSize = cellSize * 0.6;
     const pipGap = diceSize * 0.26;
     const pipRadius = diceSize * 0.1;
     const pipThickness = 0.25;
@@ -415,7 +415,7 @@ const sketch = (s: p5): void => {
     s.directionalLight(lightR, lightG, lightB, 0, -1, 0);
     s.directionalLight(lightR, lightG, lightB, 0, 0, -1);
     // uncomment to enable mouse orbit control
-    // s.orbitControl();
+    s.orbitControl();
     s.push();
     s.scale(1.5);
     drawGrid();
