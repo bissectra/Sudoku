@@ -1,7 +1,7 @@
 export const GRID_SIZE = 8;
 export const TOTAL_CELLS = GRID_SIZE * GRID_SIZE;
 export const CELL_SIZE = 50;
-export const CELL_SPACING = 8;
+export const CELL_SPACING = 0;
 export const BOX_DEPTH = CELL_SIZE * 0.25;
 export const GRID_DIMENSION = CELL_SIZE * GRID_SIZE + CELL_SPACING * (GRID_SIZE - 1);
 export const LIGHT_COLOR = [240, 230, 255] as const;

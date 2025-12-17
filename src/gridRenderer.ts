@@ -89,14 +89,11 @@ const drawDiceForCell = (
 
 export const renderGrid = (
   s: p5,
-  selectedGrid: Grid | null,
+  _selectedGrid: Grid | null,
   diceController: DiceController,
   interaction: InteractionController,
   rollingAnimation: RollingAnimation | null
 ): void => {
-  if (!selectedGrid) {
-    return;
-  }
 
   s.push();
   s.rotateX(BOARD_ROTATION_X);
@@ -182,22 +179,21 @@ export const renderGrid = (
 
   for (let row = 0; row < GRID_SIZE; row += 1) {
     for (let col = 0; col < GRID_SIZE; col += 1) {
-      const value = selectedGrid[row][col];
-      const isFilled = value === "#";
+      const cellIndex = row * GRID_SIZE + col;
+      const isLightSquare = (row + col) % 2 === 0;
       s.push();
       const columnOffset = col * (CELL_SIZE + CELL_SPACING);
       const rowOffset = row * (CELL_SIZE + CELL_SPACING);
       s.translate(columnOffset, rowOffset, BOX_DEPTH / 2);
 
-      const filledColor = s.color(70, 130, 180);
-      const emptyColor = s.color(240, 248, 255);
-
-      s.fill(isFilled ? filledColor : emptyColor);
-      s.stroke(40);
-      s.strokeWeight(1);
+      const darkColor = s.color(70, 130, 180);
+      const lightColor = s.color(240, 248, 255);
+      const color = isLightSquare ? lightColor : darkColor;
+      s.fill(color);
+      s.stroke(255, 0, 0);
+      s.strokeWeight(0);
       s.box(CELL_SIZE, CELL_SIZE, BOX_DEPTH);
 
-      const cellIndex = row * GRID_SIZE + col;
       const shouldRenderDice = diceController.diceCellsMask[cellIndex];
       const isHovered = shouldRenderDice && interaction.hoveredDiceCell === cellIndex;
       if (shouldRenderDice) {
