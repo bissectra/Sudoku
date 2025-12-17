@@ -4,27 +4,45 @@ type Grid = string[];
 
 type SolutionPayload = Grid[];
 
-const parseRequestedIndex = (): number => {
+type RequestedIndexInfo = {
+  zeroBasedIndex: number;
+  hasSegment: boolean;
+  parsedValue: number | null;
+};
+
+const parseRequestedIndex = (): RequestedIndexInfo => {
   const segments = window.location.pathname.split("/").filter(Boolean);
   if (segments.length === 0) {
-    return 0;
+    return {
+      zeroBasedIndex: 0,
+      hasSegment: false,
+      parsedValue: null,
+    };
   }
 
   const lastSegment = segments[segments.length - 1];
   const parsed = Number(lastSegment);
   if (!Number.isFinite(parsed) || Number.isNaN(parsed)) {
-    return 0;
+    return {
+      zeroBasedIndex: 0,
+      hasSegment: true,
+      parsedValue: null,
+    };
   }
 
   const zeroBased = Math.max(0, Math.floor(parsed) - 1);
-  return zeroBased;
+  return {
+    zeroBasedIndex: zeroBased,
+    hasSegment: true,
+    parsedValue: parsed,
+  };
 };
 
 const sketch = (s: p5): void => {
   let payload: SolutionPayload | null = null;
   let selectedGrid: Grid | null = null;
   let solutionLabel = "Loading…";
-  const requestedIndex = parseRequestedIndex();
+  const requested = parseRequestedIndex();
 
   // Dimensions for the drawing grid
   const cellSize = 50;
@@ -42,9 +60,23 @@ const sketch = (s: p5): void => {
         solutionLabel = "No solutions available";
         return;
       }
-      const boundedIndex = Math.min(Math.max(requestedIndex, 0), payload.length - 1);
-      selectedGrid = payload[boundedIndex];
-      solutionLabel = `Solution ${boundedIndex + 1} of ${payload.length}`;
+
+      const invalidSegment =
+        requested.hasSegment &&
+        (requested.parsedValue === null ||
+          requested.parsedValue < 1 ||
+          requested.parsedValue > payload.length);
+
+      if (invalidSegment) {
+        if (window.location.pathname !== "/1") {
+          window.location.replace("/1");
+        }
+        return;
+      }
+
+      const targetIndex = requested.hasSegment ? requested.zeroBasedIndex : 0;
+      selectedGrid = payload[targetIndex];
+      solutionLabel = `Solution ${targetIndex + 1} of ${payload.length}`;
     } catch (error) {
       console.error(error);
       solutionLabel = "Unable to load solutions";
@@ -79,21 +111,21 @@ const sketch = (s: p5): void => {
     const gridDimension = cellSize * 8 + cellSpacing * 7;
 
     s.push();
-    s.rotateX(60);
+    s.rotateX(30);
     s.translate(-gridDimension / 2 + cellSize / 2, -gridDimension / 2 + cellSize / 2, 0);
 
     for (let row = 0; row < 8; row += 1) {
       for (let col = 0; col < 8; col += 1) {
         const value = selectedGrid[row][col];
         const isFilled = value === "#";
-        const boxDepth = isFilled ? cellSize * 0.55 : cellSize * 0.25;
+        const boxDepth = cellSize * 0.25;
 
         s.push();
         const columnOffset = col * (cellSize + cellSpacing);
         const rowOffset = row * (cellSize + cellSpacing);
         s.translate(columnOffset, rowOffset, boxDepth / 2);
 
-        s.fill(isFilled ? "#28c17a" : 255);
+        s.fill(isFilled ? s.color("#28c17a") : s.color(255));
         s.stroke(40);
         s.strokeWeight(1);
         s.box(cellSize, cellSize, boxDepth);
@@ -117,7 +149,7 @@ const sketch = (s: p5): void => {
     s.background(18);
     s.orbitControl(0.4, 0.4, 0);
     s.ambientLight(60);
-    s.directionalLight(255, 255, 255, -0.5, 1, -0.5);
+    s.directionalLight(255, 255, 255, 0, 1, 0);
     drawGrid();
     drawOverlayText();
   };
