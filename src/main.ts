@@ -4,9 +4,14 @@ import { DiceController } from "./diceController";
 import { renderGrid } from "./gridRenderer";
 import { loadSolutions } from "./solutionService";
 import { InteractionController } from "./interaction";
-import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
+import {
+  LIGHT_COLOR,
+  GRID_SIZE,
+  DRAG_DISTANCE_THRESHOLD,
+  TOTAL_CELLS,
+} from "./boardLayout";
 import type { CubeOrientation } from "./orientation";
-import { getOrientationByCode } from "./orientation";
+import { parseLayoutEntries } from "./layoutEncoding";
 
 const URL_LAYOUT_PARAM = "layout";
 
@@ -18,8 +23,14 @@ const getLayoutParam = (): string | null => {
   return params.get(URL_LAYOUT_PARAM);
 };
 
-const decodeOrientationLayout = (layout: string): Array<CubeOrientation | null> =>
-  Array.from(layout, (char) => (char === "_" ? null : getOrientationByCode(char)));
+const decodeOrientationLayout = (layout: string): Array<CubeOrientation | null> => {
+  const orientations: Array<CubeOrientation | null> = Array(TOTAL_CELLS).fill(null);
+  const entries = parseLayoutEntries(layout);
+  for (const entry of entries) {
+    orientations[entry.cellIndex] = entry.orientation;
+  }
+  return orientations;
+};
 
 const updateUrlLayoutParam = (layout: string | null): void => {
   if (typeof window === "undefined") {

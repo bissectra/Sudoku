@@ -141,12 +141,22 @@ if (ORIENTATION_CODE_SEQUENCE.length !== ALL_ORIENTATIONS.length) {
 }
 
 const ORIENTATION_BY_CODE = new Map<string, CubeOrientation>();
+const ORIENTATION_CODE_BY_KEY = new Map<string, string>();
 ORIENTATION_CODE_SEQUENCE.split("").forEach((code, index) => {
   ORIENTATION_BY_CODE.set(code, ALL_ORIENTATIONS[index]);
+  ORIENTATION_CODE_BY_KEY.set(ALL_ORIENTATIONS[index].key, code);
 });
 
 export const getOrientationByCode = (code: string): CubeOrientation | null => {
   return ORIENTATION_BY_CODE.get(code.toLowerCase()) ?? null;
+};
+
+export const getOrientationCode = (orientation: CubeOrientation): string => {
+  const code = ORIENTATION_CODE_BY_KEY.get(orientation.key);
+  if (!code) {
+    throw new Error(`Unexpected orientation ${orientation.key}`);
+  }
+  return code;
 };
 
 type DigitOrientationPredicate = (orientation: CubeOrientation) => boolean;

@@ -1,5 +1,6 @@
 import type { Grid, SolutionLoadResult } from "./types";
 import { GRID_SIZE, TOTAL_CELLS } from "./boardLayout";
+import { encodeLayoutEntries, parseLayoutEntries, type LayoutEntry } from "./layoutEncoding";
 
 type LoadOptions = {
   layout?: string | null;
@@ -25,37 +26,43 @@ const createRandomGrid = (size: number): Grid => {
   );
 };
 
-const normalizeOrientationLayout = (layout: string): string => {
-  const filtered = layout.toLowerCase().replace(/[^a-x_]/g, "");
-  return filtered.slice(0, TOTAL_CELLS).padEnd(TOTAL_CELLS, "_");
+const createGridFromLayoutEntries = (entries: LayoutEntry[]): Grid => {
+  const cells = Array<string>(TOTAL_CELLS).fill(".");
+  for (const { cellIndex } of entries) {
+    if (cellIndex >= 0 && cellIndex < TOTAL_CELLS) {
+      cells[cellIndex] = "#";
+    }
+  }
+  return Array.from({ length: GRID_SIZE }, (_, row) =>
+    cells.slice(row * GRID_SIZE, row * GRID_SIZE + GRID_SIZE).join("")
+  );
 };
 
-const createGridFromOrientationLayout = (layout: string): Grid => {
-  return Array.from({ length: GRID_SIZE }, (_, row) => {
-    const segment = layout.slice(row * GRID_SIZE, row * GRID_SIZE + GRID_SIZE);
-    const rowCells = Array.from(segment, (cell) => (cell === "_" ? "." : "#"));
-    return rowCells.join("");
-  });
+const buildLayoutGrid = (
+  layout: string | null | undefined
+): { grid: Grid; normalizedLayout: string | null } => {
+  if (!layout) {
+    return { grid: createRandomGrid(GRID_SIZE), normalizedLayout: null };
+  }
+  const entries = parseLayoutEntries(layout);
+  if (entries.length === 0) {
+    return { grid: createRandomGrid(GRID_SIZE), normalizedLayout: null };
+  }
+  const normalizedLayout = encodeLayoutEntries(entries);
+  return {
+    grid: createGridFromLayoutEntries(entries),
+    normalizedLayout,
+  };
 };
 
 export const loadSolutions = async (
   options?: LoadOptions
 ): Promise<SolutionLoadResult> => {
-  let startGrid: Grid;
-  let startOrientationLayout: string | null = null;
-
-  if (options?.layout !== undefined && options.layout !== null) {
-    const normalizedLayout = normalizeOrientationLayout(options.layout);
-    startOrientationLayout = normalizedLayout;
-    startGrid = createGridFromOrientationLayout(normalizedLayout);
-  } else {
-    startGrid = createRandomGrid(GRID_SIZE);
-  }
-
+  const { grid, normalizedLayout } = buildLayoutGrid(options?.layout);
   return {
-    startGrid,
-    goalGrid: startGrid,
-    label: startOrientationLayout ? "URL layout" : "Random grid",
-    startOrientationLayout,
+    startGrid: grid,
+    goalGrid: grid,
+    label: normalizedLayout ? "URL layout" : "Random grid",
+    startOrientationLayout: normalizedLayout,
   };
 };
