@@ -147,7 +147,6 @@ const sketch = (s: p5): void => {
 
   s.draw = (): void => {
     s.background(18);
-    s.orbitControl(0.4, 0.4, 0);
     s.ambientLight(60);
     s.directionalLight(255, 255, 255, 0, 1, 0);
     drawGrid();
