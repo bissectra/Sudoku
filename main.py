@@ -60,31 +60,21 @@ def format_grid(grid: Grid) -> str:
     return "\n".join(" ".join(row) for row in grid)
 
 
-def prettiness_score(grid: Grid) -> float:
-    """Return a composite score that prefers balanced, cohesive shapes.
+def prettiness_score(grid: Grid) -> dict[str, float | int]:
+    """Return raw features for lexicographic ordering (no aggregation).
 
-    Components:
-    1) Edge transitions (existing): prefer ~50% boundary changes to avoid
-       blobs or noise.
-    2) Density: prefer fill ratio near half the board.
-    3) Balance: even distribution of filled cells across rows/columns.
-    4) Compactness: shapes closer to the board center.
-    5) Cohesion: fewer connected components of filled cells.
-
-    Each sub-score is normalized to [0,1] and combined with weights to
-    reduce ties across solutions.
+    Keys:
+    - transitions: total edge transitions (int)
+    - components: connected '#' clusters (int)
+    - std: row_std + col_std (float)
+    - avg_dist: average distance to center (float)
+    - row_std, col_std, filled_count (auxiliary fields)
     """
 
-    def clamp01(x: float) -> float:
-        return max(0.0, min(1.0, x))
-
-    # 1) Edge transitions (existing behavior)
-    horiz = sum(1 for r in range(8) for c in range(7) if grid[r][c] != grid[r][c+1])
-    vert = sum(1 for r in range(7) for c in range(8) if grid[r][c] != grid[r+1][c])
-    total_edges = 8 * 7 + 8 * 7  # 112
-    transitions = horiz + vert
-    target_edges = total_edges / 2  # prefer moderate complexity
-    transition_score = 1.0 - abs(transitions - target_edges) / target_edges
+    # Edge transitions
+    horiz = sum(1 for r in range(8) for c in range(7) if grid[r][c] != grid[r][c + 1])
+    vert = sum(1 for r in range(7) for c in range(8) if grid[r][c] != grid[r + 1][c])
+    transitions = horiz + vert  # int
 
     # Collect helper data
     filled_cells: list[tuple[int, int]] = [
@@ -92,12 +82,7 @@ def prettiness_score(grid: Grid) -> float:
     ]
     filled_count = len(filled_cells)
 
-    # 2) Density: aim for half the board (32 of 64 cells)
-    density_target = 32
-    density_score = 1.0 - abs(filled_count - density_target) / density_target
-    density_score = clamp01(density_score)
-
-    # 3) Balance: even spread across rows and columns
+    # Balance (std)
     row_counts = [grid[r].count("#") for r in range(8)]
     col_counts = [sum(1 for r in range(8) if grid[r][c] == "#") for c in range(8)]
     row_mean = sum(row_counts) / 8
@@ -106,21 +91,16 @@ def prettiness_score(grid: Grid) -> float:
     col_var = sum((cc - col_mean) ** 2 for cc in col_counts) / 8
     row_std = row_var ** 0.5
     col_std = col_var ** 0.5
-    # Max possible std is 8 when one row is full and others empty.
-    balance_score = 1.0 - ((row_std + col_std) / 16)
-    balance_score = clamp01(balance_score)
+    std_total = row_std + col_std
 
-    # 4) Compactness: prefer shapes near the board center (3.5, 3.5)
+    # Compactness (avg_dist)
     if filled_cells:
         cx, cy = 3.5, 3.5
-        max_dist = (3.5 ** 2 + 3.5 ** 2) ** 0.5  # corner to center
         avg_dist = sum(((x - cx) ** 2 + (y - cy) ** 2) ** 0.5 for x, y in filled_cells) / filled_count
-        compactness_score = 1.0 - (avg_dist / max_dist)
     else:
-        compactness_score = 0.0
-    compactness_score = clamp01(compactness_score)
+        avg_dist = 0.0
 
-    # 5) Cohesion: fewer connected components of '#'
+    # Cohesion: number of connected components
     def component_count() -> int:
         seen = [[False] * 8 for _ in range(8)]
         dirs = [(1, 0), (-1, 0), (0, 1), (0, -1)]
@@ -142,19 +122,16 @@ def prettiness_score(grid: Grid) -> float:
         return count
 
     components = component_count()
-    cohesion_score = 1.0 / components if components > 0 else 0.0
 
-    # Weighted blend (weights sum to 1.0)
-    score = (
-        0.45 * transition_score
-        + 0.15 * density_score
-        + 0.15 * balance_score
-        + 0.15 * compactness_score
-        + 0.10 * cohesion_score
-    )
-
-    # Clamp to [0,1] for safety
-    return clamp01(score)
+    return {
+        "transitions": transitions,
+        "components": components,
+        "std": std_total,
+        "avg_dist": avg_dist,
+        "row_std": row_std,
+        "col_std": col_std,
+        "filled_count": filled_count,
+    }
 
 
 def find_solutions() -> list[tuple[int, ...]]:
@@ -173,16 +150,33 @@ def write_solutions_with_scores(path: str = "solution.txt") -> None:
     scored = []
     for idx, sol in enumerate(solutions, start=1):
         grid = build_grid(sol)
-        score = prettiness_score(grid)
-        scored.append((score, idx, grid))
+        breakdown = prettiness_score(grid)
+        scored.append((breakdown, idx, grid))
 
-    # Sort by score desc, tie-break by original index to keep determinism
-    scored.sort(key=lambda x: (-x[0], x[1]))
+    # Order: descending transitions, descending components, ascending avg_dist, ascending std, then index
+    scored.sort(key=lambda x: (
+        -x[0]["transitions"],
+        -x[0]["components"],
+        x[0]["avg_dist"],
+        x[0]["std"],
+        x[1],
+    ))
 
-    lines: list[str] = [f"Number of solutions: {len(scored)} (sorted by score desc)"]
+    lines: list[str] = [
+        "Number of solutions: {}".format(len(scored))
+    ]
     for new_idx, (score, _orig_idx, grid) in enumerate(scored, start=1):
         lines.append("")
-        lines.append(f"Solution {new_idx}: score={score:.4f}")
+        lines.append(
+            "Solution {i}: transitions={t} | components={c} | std={s:.3f} | avg_dist={d:.3f}"
+            .format(
+                i=new_idx,
+                t=score["transitions"],
+                c=score["components"],
+                s=score["std"],
+                d=score["avg_dist"],
+            )
+        )
         lines.append(format_grid(grid))
 
     content = "\n".join(lines) + "\n"
