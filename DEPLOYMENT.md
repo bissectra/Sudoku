@@ -6,7 +6,7 @@
    - This project ships with `.env` pointing at `/Sudoku/`; update that file if the published path differs.
    - If you publish to `https://<username>.github.io/Sudoku/`, the build will automatically adjust the base path before deploying.
    - If you are publishing to your user site (`https://<username>.github.io/`), you can leave the variable unset and Vite will build with `/`.
-3. **Deploy.** Run `npm run deploy`. The `predeploy` script triggers `vite build` first, and `gh-pages -d dist` pushes the resulting assets into the repository’s `gh-pages` branch.
+3. **Deploy.** Run `npm run deploy`. The `predeploy` script triggers `vite build` (which now also copies `dist/index.html` to `dist/404.html` for SPA routing), and `gh-pages -d dist` pushes the resulting assets into the repository’s `gh-pages` branch.
 4. **GitHub Pages settings.**
    - Configure your repository’s GitHub Pages source to use the `gh-pages` branch.
    - Double-check the published URL matches the base you set above.
