@@ -10,6 +10,9 @@ type RequestedIndexInfo = {
   parsedValue: number | null;
 };
 
+type DiceRotation = "left" | "up" | "right" | "down";
+type DiceOrientation = DiceRotation[];
+
 type RendererWithCamera = {
   _curCamera?: {
     cameraMatrix?: {
@@ -80,19 +83,18 @@ const sketch = (s: p5): void => {
     rngState = (rngState * 1664525 + 1013904223) >>> 0;
     return rngState / 0x100000000;
   };
-
-  const axisOptions = [0, 90, 180, 270];
-  const randomAxisRotation = (): number =>
-    axisOptions[Math.floor(seededRandom() * axisOptions.length)];
+  const rotationOptions: DiceRotation[] = ["left", "up", "right", "down"];
+  const randomDiceOrientation = (): DiceOrientation => {
+    const rotationCount = 1 + Math.floor(seededRandom() * 3);
+    return Array.from({ length: rotationCount }, () =>
+      rotationOptions[Math.floor(seededRandom() * rotationOptions.length)]
+    );
+  };
   const diceCellsMask = Array.from({ length: TOTAL_CELLS }, () => seededRandom() < 0.45);
   if (!diceCellsMask.some(Boolean)) {
     diceCellsMask[0] = true;
   }
-  const diceOrientations = diceCellsMask.map(() => ({
-    x: randomAxisRotation(),
-    y: randomAxisRotation(),
-    z: randomAxisRotation(),
-  }));
+  const diceOrientations: DiceOrientation[] = diceCellsMask.map(() => randomDiceOrientation());
 
   const dicePipPattern: Record<number, [number, number][]> = {
     1: [[0, 0]],
@@ -149,12 +151,12 @@ const sketch = (s: p5): void => {
     // Draw pips for each face
     const faceValues = [1, 2, 3, 4, 5, 6];
     const faceNormals = [
-      [0, 1, 0], // top
-      [0, 0, 1], // front
+      [0, 0, 1], // top
+      [0, 1, 0], // front
       [1, 0, 0], // right
       [-1, 0, 0], // left
-      [0, 0, -1], // back
-      [0, -1, 0], // bottom
+      [0, -1, 0], // back
+      [0, 0, -1], // bottom
     ];
 
     for (let i = 0; i < faceValues.length; i += 1) {
@@ -206,9 +208,23 @@ const sketch = (s: p5): void => {
     s.strokeWeight(1);
 
     s.push();
-    s.rotateX(orientation.x);
-    s.rotateY(orientation.y);
-    s.rotateZ(orientation.z);
+    // Apply the stored rotations in sequence relative to the standard die orientation.
+    for (const rotation of orientation) {
+      switch (rotation) {
+        case "left":
+          s.rotateY(-90);
+          break;
+        case "right":
+          s.rotateY(90);
+          break;
+        case "up":
+          s.rotateX(-90);
+          break;
+        case "down":
+          s.rotateX(90);
+          break;
+      }
+    }
     s.scale(diceSize);
     drawDice();
     s.pop();
