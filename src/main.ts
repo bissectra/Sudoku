@@ -176,10 +176,6 @@ const sketch = (s: p5): void => {
     s.strokeWeight(1);
 
     s.push();
-    const rotationSpeed = 0.6;
-    s.rotateX(s.frameCount * rotationSpeed + cellIndex * 15);
-    s.rotateY(s.frameCount * rotationSpeed * 0.7 + cellIndex * 25);
-    s.rotateZ(s.frameCount * rotationSpeed * 0.4 + cellIndex * 10);
     s.scale(diceSize);
     drawDice();
     s.pop();
