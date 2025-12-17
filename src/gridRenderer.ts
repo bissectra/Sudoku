@@ -17,6 +17,7 @@ import {
 const drawDiceForCell = (
   s: p5,
   cellIndex: number,
+  isHovered: boolean,
   rollingAnimation: RollingAnimation | null,
   diceController: DiceController
 ): void => {
@@ -48,9 +49,18 @@ const drawDiceForCell = (
 
   s.push();
   s.noStroke();
-  const faceFill = 80;
+  const faceFill = isHovered ? 80 : 35;
   s.fill(faceFill);
   s.pop();
+  if (isHovered) {
+    s.push();
+    s.noFill();
+    const highlightPulse = Math.sin(s.frameCount * 0.06 + cellIndex) * 0.3 + 0.7;
+    s.stroke(255, 215, 0, highlightPulse * 200);
+    s.strokeWeight(2);
+    s.box(diceSize + 6, diceSize + 6, diceSize + 6);
+    s.pop();
+  }
   s.pop();
 };
 
@@ -69,7 +79,18 @@ export const renderGrid = (
   s.rotateX(BOARD_ROTATION_X);
   s.translate(-GRID_DIMENSION / 2 + CELL_SIZE / 2, -GRID_DIMENSION / 2 + CELL_SIZE / 2, 0);
 
-  const renderer = (s as p5 & { _renderer?: { _curCamera?: { cameraMatrix?: { multiplyPoint(point: p5.Vector): p5.Vector } }; uPMatrix?: { multiplyAndNormalizePoint(point: p5.Vector): { x: number; y: number } } } })._renderer;
+  const renderer = (s as p5 & {
+    _renderer?: {
+      _curCamera?: {
+        cameraMatrix?: {
+          multiplyPoint(point: p5.Vector): p5.Vector;
+        };
+      };
+      uPMatrix?: {
+        multiplyAndNormalizePoint(point: p5.Vector): { x: number; y: number };
+      };
+    };
+  })._renderer;
   const cameraMatrix = renderer?._curCamera?.cameraMatrix;
   const projectionMatrix = renderer?.uPMatrix;
   const canProject = Boolean(cameraMatrix && projectionMatrix);
@@ -157,7 +178,7 @@ export const renderGrid = (
       const shouldRenderDice = diceController.diceCellsMask[cellIndex];
       const isHovered = shouldRenderDice && interaction.hoveredDiceCell === cellIndex;
       if (shouldRenderDice) {
-        drawDiceForCell(s, cellIndex, rollingAnimation, diceController);
+        drawDiceForCell(s, cellIndex, isHovered, rollingAnimation, diceController);
       }
       s.pop();
     }
