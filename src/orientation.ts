@@ -133,9 +133,21 @@ export class CubeOrientation {
 
 const DEFAULT_ORIENTATION = CubeOrientation.identity();
 
-const ALL_ORIENTATIONS = XY_ORIENTATIONS.map(
-  ([x, y]) => new CubeOrientation(x, y)
-);
+const ALL_ORIENTATIONS = XY_ORIENTATIONS.map(([x, y]) => new CubeOrientation(x, y));
+
+const ORIENTATION_CODE_SEQUENCE = "abcdefghijklmnopqrstuvwx";
+if (ORIENTATION_CODE_SEQUENCE.length !== ALL_ORIENTATIONS.length) {
+  throw new Error("Orientation code sequence length mismatch.");
+}
+
+const ORIENTATION_BY_CODE = new Map<string, CubeOrientation>();
+ORIENTATION_CODE_SEQUENCE.split("").forEach((code, index) => {
+  ORIENTATION_BY_CODE.set(code, ALL_ORIENTATIONS[index]);
+});
+
+export const getOrientationByCode = (code: string): CubeOrientation | null => {
+  return ORIENTATION_BY_CODE.get(code.toLowerCase()) ?? null;
+};
 
 type DigitOrientationPredicate = (orientation: CubeOrientation) => boolean;
 

@@ -62,6 +62,16 @@ export class DiceController {
     }
   }
 
+  setDiceOrientations(orientations: Array<CubeOrientation | null>): void {
+    const limit = Math.min(orientations.length, this.totalCells);
+    for (let index = 0; index < limit; index += 1) {
+      const orientation = orientations[index];
+      if (orientation !== null && this.diceCellsMask[index]) {
+        this.diceOrientations[index] = orientation;
+      }
+    }
+  }
+
   private getTargetCellIndex(cellIndex: number, rotation: DiceRotation): number | null {
     const row = Math.floor(cellIndex / this.gridSize);
     const col = cellIndex % this.gridSize;

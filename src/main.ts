@@ -5,8 +5,23 @@ import { renderGrid } from "./gridRenderer";
 import { loadSolutions } from "./solutionService";
 import { InteractionController } from "./interaction";
 import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
+import type { CubeOrientation } from "./orientation";
+import { getOrientationByCode } from "./orientation";
 
-  const sketch = (s: p5): void => {
+const URL_LAYOUT_PARAM = "layout";
+
+const getLayoutParam = (): string | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  const params = new URLSearchParams(window.location.search);
+  return params.get(URL_LAYOUT_PARAM);
+};
+
+const decodeOrientationLayout = (layout: string): Array<CubeOrientation | null> =>
+  Array.from(layout, (char) => (char === "_" ? null : getOrientationByCode(char)));
+
+const sketch = (s: p5): void => {
     let goalGrid: Grid | null = null;
   let solutionLabel = "Loading…";
   const refreshInfoLabel = (): void => {
@@ -40,12 +55,17 @@ import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
   const lightColor = LIGHT_COLOR;
 
   const loadAndSelectSolution = async (): Promise<void> => {
-    const result = await loadSolutions();
+    const layoutParam = getLayoutParam();
+    const result = await loadSolutions({ layout: layoutParam ?? undefined });
     if (result.goalGrid) {
       goalGrid = result.goalGrid;
     }
     if (result.startGrid) {
       diceController.setDiceMaskFromGrid(result.startGrid);
+      if (result.startOrientationLayout !== null) {
+        const orientations = decodeOrientationLayout(result.startOrientationLayout);
+        diceController.setDiceOrientations(orientations);
+      }
       logInitialDiceTopFaces(result.startGrid);
     }
     solutionLabel = result.label || solutionLabel;

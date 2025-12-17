@@ -18,4 +18,5 @@ export type SolutionLoadResult = {
   startGrid: Grid | null;
   goalGrid: Grid | null;
   label: string;
+  startOrientationLayout: string | null;
 };
