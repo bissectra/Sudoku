@@ -161,7 +161,11 @@ const sketch = (s: p5): void => {
     ],
   };
 
-  const drawDiceForCell = (orientation: Orientation): void => {
+  const drawDiceForCell = (
+    orientation: Orientation,
+    cellIndex: number,
+    isHovered: boolean
+  ): void => {
     const diceSize = cellSize * 0.6;
     const pipGap = diceSize * 0.26;
     const pipRadius = diceSize * 0.1;
@@ -205,14 +209,24 @@ const sketch = (s: p5): void => {
 
     s.push();
     s.noStroke();
-    s.fill(35);
-    drawFacePips(0, 0, 0, orientation.top);
-    drawFacePips(180, 0, 0, orientation.bottom);
-    drawFacePips(-90, 0, 0, orientation.front);
-    drawFacePips(90, 0, 0, orientation.back);
+    const faceFill = isHovered ? 80 : 35;
+    s.fill(faceFill);
+    drawFacePips(0, 0, 0, orientation.front);
+    drawFacePips(180, 0, 0, orientation.back);
+    drawFacePips(-90, 0, 0, orientation.top);
+    drawFacePips(90, 0, 0, orientation.bottom);
     drawFacePips(0, -90, 0, orientation.left);
     drawFacePips(0, 90, 0, orientation.right);
     s.pop();
+    if (isHovered) {
+      s.push();
+      s.noFill();
+      const highlightPulse = Math.sin(s.frameCount * 0.06 + cellIndex) * 0.3 + 0.7;
+      s.stroke(255, 215, 0, highlightPulse * 200);
+      s.strokeWeight(2);
+      s.box(diceSize + 6, diceSize + 6, diceSize + 6);
+      s.pop();
+    }
     s.pop();
   };
 
@@ -281,6 +295,47 @@ const sketch = (s: p5): void => {
     s.rotateX(30);
     s.translate(-gridDimension / 2 + cellSize / 2, -gridDimension / 2 + cellSize / 2, 0);
 
+    const renderer = s._renderer;
+    const cameraMatrix = renderer?._curCamera?.cameraMatrix;
+    const projectionMatrix = renderer.uPMatrix;
+    const canProject = Boolean(cameraMatrix && projectionMatrix);
+    const gridOffset = -gridDimension / 2 + cellSize / 2;
+    const diceSize = cellSize * 0.6;
+    const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
+    const depthOffset = boxDepth / 2 + diceElevation;
+    const rotationRadians = s.radians(30);
+    const cosAngle = Math.cos(rotationRadians);
+    const sinAngle = Math.sin(rotationRadians);
+
+    const projectCellCenter = (row: number, col: number):
+      | { screenX: number; screenY: number }
+      | null => {
+      if (!canProject) {
+        return null;
+      }
+      const columnOffset = col * (cellSize + cellSpacing);
+      const rowOffset = row * (cellSize + cellSpacing);
+      const point = s.createVector(
+        gridOffset + columnOffset,
+        gridOffset + rowOffset,
+        depthOffset
+      );
+      const rotatedY = point.y * cosAngle - point.z * sinAngle;
+      const rotatedZ = point.y * sinAngle + point.z * cosAngle;
+      point.y = rotatedY;
+      point.z = rotatedZ;
+      point.mult(1.5);
+      const viewPoint = cameraMatrix!.multiplyPoint(point);
+      const ndc = projectionMatrix.multiplyAndNormalizePoint(viewPoint);
+      if (!Number.isFinite(ndc.x) || !Number.isFinite(ndc.y)) {
+        return null;
+      }
+      return {
+        screenX: (ndc.x * 0.5 + 0.5) * s.width,
+        screenY: ((-ndc.y) * 0.5 + 0.5) * s.height,
+      };
+    };
+
     for (let row = 0; row < 8; row += 1) {
       for (let col = 0; col < 8; col += 1) {
         const value = selectedGrid[row][col];
@@ -290,6 +345,14 @@ const sketch = (s: p5): void => {
         const columnOffset = col * (cellSize + cellSpacing);
         const rowOffset = row * (cellSize + cellSpacing);
         s.translate(columnOffset, rowOffset, boxDepth / 2);
+
+        const hoverPos = projectCellCenter(row, col);
+        const hoverThreshold = cellSize * 0.8;
+        const isHovered =
+          hoverPos !== null
+            ? Math.hypot(hoverPos.screenX - s.mouseX, hoverPos.screenY - s.mouseY) <
+              hoverThreshold
+            : false;
 
         const filledColor = s.color(70, 130, 180); // Steel Blue
         const emptyColor = s.color(240, 248, 255); // Alice Blue
@@ -306,7 +369,7 @@ const sketch = (s: p5): void => {
           continue;
         }
 
-        drawDiceForCell(orientation);
+        drawDiceForCell(orientation, cellIndex, isHovered);
         s.pop();
       }
     }
