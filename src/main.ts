@@ -10,6 +10,73 @@ type RequestedIndexInfo = {
   parsedValue: number | null;
 };
 
+type Orientation = {
+  front: number;
+  back: number;
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+};
+
+const rotateX = (orientation: Orientation): Orientation => ({
+  front: orientation.top,
+  back: orientation.bottom,
+  top: orientation.back,
+  bottom: orientation.front,
+  left: orientation.left,
+  right: orientation.right,
+});
+
+const rotateY = (orientation: Orientation): Orientation => ({
+  front: orientation.left,
+  back: orientation.right,
+  right: orientation.front,
+  left: orientation.back,
+  top: orientation.top,
+  bottom: orientation.bottom,
+});
+
+const rotateZ = (orientation: Orientation): Orientation => ({
+  front: orientation.front,
+  back: orientation.back,
+  top: orientation.right,
+  bottom: orientation.left,
+  right: orientation.bottom,
+  left: orientation.top,
+});
+
+const generateOrientations = (): Orientation[] => {
+  const base: Orientation = {
+    front: 6,
+    back: 1,
+    left: 5,
+    right: 2,
+    top: 4,
+    bottom: 3,
+  };
+
+  const encode = (orientation: Orientation): string =>
+    `${orientation.front}-${orientation.back}-${orientation.left}-${orientation.right}-${orientation.top}-${orientation.bottom}`;
+
+  const queue: Orientation[] = [base];
+  const seen = new Set<string>();
+  const orientations: Orientation[] = [];
+
+  while (queue.length > 0 && seen.size < 24) {
+    const current = queue.shift()!;
+    const key = encode(current);
+    if (seen.has(key)) {
+      continue;
+    }
+    seen.add(key);
+    orientations.push(current);
+    queue.push(rotateZ(current), rotateX(current), rotateY(current));
+  }
+
+  return orientations;
+};
+
 const parseRequestedIndex = (): RequestedIndexInfo => {
   const segments = window.location.pathname.split("/").filter(Boolean);
   if (segments.length === 0) {
@@ -50,6 +117,8 @@ const sketch = (s: p5): void => {
   };
   refreshInfoLabel();
   const requested = parseRequestedIndex();
+
+  const orientationPresets = generateOrientations();
 
   // Dimensions for the drawing grid
   const cellSize = 50;
@@ -92,13 +161,11 @@ const sketch = (s: p5): void => {
     ],
   };
 
-  const drawDiceForCell = (row: number, col: number): void => {
+  const drawDiceForCell = (orientation: Orientation): void => {
     const diceSize = cellSize * 0.6;
     const pipGap = diceSize * 0.26;
     const pipRadius = diceSize * 0.1;
     const pipThickness = 0.25;
-    const diceValue = ((row * 8 + col) % 6) + 1;
-    const pipPositions = dicePipPattern[diceValue] ?? dicePipPattern[1];
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
 
     s.push();
@@ -109,7 +176,19 @@ const sketch = (s: p5): void => {
     s.strokeWeight(1);
     s.box(diceSize, diceSize, diceSize);
 
-    const drawPips = (): void => {
+    const drawFacePips = (
+      rotX = 0,
+      rotY = 0,
+      rotZ = 0,
+      faceValue = 1
+    ): void => {
+      const pipPositions = dicePipPattern[faceValue] ?? dicePipPattern[1];
+
+      s.push();
+      s.rotateX(rotX);
+      s.rotateY(rotY);
+      s.rotateZ(rotZ);
+      s.translate(0, 0, diceSize / 2 + 0.3);
       pipPositions.forEach(([offsetX, offsetY]) => {
         s.push();
         s.translate(offsetX * pipGap, offsetY * pipGap, 0);
@@ -121,27 +200,18 @@ const sketch = (s: p5): void => {
         s.sphere(pipRadius, 20, 16);
         s.pop();
       });
-    };
-
-    const drawFacePips = (rotX = 0, rotY = 0, rotZ = 0): void => {
-      s.push();
-      s.rotateX(rotX);
-      s.rotateY(rotY);
-      s.rotateZ(rotZ);
-      s.translate(0, 0, diceSize / 2 + 0.3);
-      drawPips();
       s.pop();
     };
 
     s.push();
     s.noStroke();
     s.fill(35);
-    drawFacePips();
-    drawFacePips(180, 0, 0);
-    drawFacePips(-90, 0, 0);
-    drawFacePips(90, 0, 0);
-    drawFacePips(0, -90, 0);
-    drawFacePips(0, 90, 0);
+    drawFacePips(0, 0, 0, orientation.front);
+    drawFacePips(180, 0, 0, orientation.back);
+    drawFacePips(-90, 0, 0, orientation.top);
+    drawFacePips(90, 0, 0, orientation.bottom);
+    drawFacePips(0, -90, 0, orientation.left);
+    drawFacePips(0, 90, 0, orientation.right);
     s.pop();
     s.pop();
   };
@@ -229,7 +299,14 @@ const sketch = (s: p5): void => {
         s.strokeWeight(1);
         // s.box(cellSize, cellSize, boxDepth);
 
-        drawDiceForCell(row, col);
+        const cellIndex = row * 8 + col;
+        const orientation = orientationPresets[cellIndex];
+        if (!orientation) {
+          s.pop();
+          continue;
+        }
+
+        drawDiceForCell(orientation);
         s.pop();
       }
     }
