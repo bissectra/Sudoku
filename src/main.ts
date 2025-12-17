@@ -125,7 +125,10 @@ const sketch = (s: p5): void => {
         const rowOffset = row * (cellSize + cellSpacing);
         s.translate(columnOffset, rowOffset, boxDepth / 2);
 
-        s.fill(isFilled ? s.color("#28c17a") : s.color(255));
+        const filledColor = s.color(255, 99, 71); // Tomato
+        const emptyColor = s.color(255, 223, 186); // Light Peach
+
+        s.fill(isFilled ? filledColor : emptyColor);
         s.stroke(40);
         s.strokeWeight(1);
         s.box(cellSize, cellSize, boxDepth);
