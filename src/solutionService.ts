@@ -1,7 +1,7 @@
-import type { Grid, RequestedSolutionPair, SolutionPayload, SolutionLoadResult } from "./types";
+import type { Grid, RequestedGoal, SolutionPayload, SolutionLoadResult } from "./types";
 
 export const loadSolutions = async (
-  requested: RequestedSolutionPair
+  requested: RequestedGoal
 ): Promise<SolutionLoadResult> => {
   try {
     const response = await fetch("/solutions.json");
@@ -22,13 +22,10 @@ export const loadSolutions = async (
       };
     }
 
-    const fallbackPath = "/1/2";
+    const fallbackPath = "/1";
     const invalidSegment =
       !requested.segmentCountValid ||
-      requested.parsedStart === null ||
       requested.parsedGoal === null ||
-      requested.parsedStart < 1 ||
-      requested.parsedStart > payload.length ||
       requested.parsedGoal < 1 ||
       requested.parsedGoal > payload.length;
 
@@ -41,22 +38,12 @@ export const loadSolutions = async (
       };
     }
 
-    const startIndex = requested.startZeroBased;
     const goalIndex = requested.goalZeroBased;
-
-    if (startIndex === goalIndex) {
-      return {
-        startGrid: null,
-        goalGrid: null,
-        label: "",
-        redirectTo: fallbackPath,
-      };
-    }
-
-    const label = `Start ${startIndex + 1} → Goal ${goalIndex + 1} of ${payload.length}`;
+    const label = `Goal ${goalIndex + 1} of ${payload.length}`;
+    const goalGrid = payload[goalIndex];
     return {
-      startGrid: payload[startIndex],
-      goalGrid: payload[goalIndex],
+      startGrid: goalGrid,
+      goalGrid,
       label,
     };
   } catch (error) {

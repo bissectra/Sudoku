@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { Grid } from "./types";
-import { parseRequestedSolutionPair } from "./request";
+import { parseRequestedGoal } from "./request";
 import { DiceController } from "./diceController";
 import { renderGrid } from "./gridRenderer";
 import { loadSolutions } from "./solutionService";
@@ -18,7 +18,7 @@ import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
   };
   refreshInfoLabel();
 
-  const requested = parseRequestedSolutionPair();
+  const requested = parseRequestedGoal();
   const diceController = new DiceController(GRID_SIZE);
   const logInitialDiceTopFaces = (grid: Grid): void => {
     const topFaceValues = diceController.getTopFaceValues();

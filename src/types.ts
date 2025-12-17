@@ -2,11 +2,9 @@ export type Grid = string[];
 
 export type SolutionPayload = Grid[];
 
-export type RequestedSolutionPair = {
-  startZeroBased: number;
+export type RequestedGoal = {
   goalZeroBased: number;
   segmentCountValid: boolean;
-  parsedStart: number | null;
   parsedGoal: number | null;
 };
 
