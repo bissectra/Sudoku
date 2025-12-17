@@ -1,4 +1,4 @@
-Number of solutions: 140 (sorted by -transitions, -components, avg_dist, std)
+Number of solutions: 140
 
 Solution 1: transitions=88 | components=21 | std=1.732 | avg_dist=2.819
 . # . # # . # .
