@@ -1,13 +1,5 @@
 export type Grid = string[];
 
-export type SolutionPayload = Grid[];
-
-export type RequestedGoal = {
-  goalZeroBased: number;
-  segmentCountValid: boolean;
-  parsedGoal: number | null;
-};
-
 export type DiceRotation = "left" | "up" | "right" | "down";
 export type RotationAxis = "x" | "y";
 
@@ -26,5 +18,4 @@ export type SolutionLoadResult = {
   startGrid: Grid | null;
   goalGrid: Grid | null;
   label: string;
-  redirectTo?: string;
 };

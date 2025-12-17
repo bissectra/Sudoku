@@ -1,6 +1,5 @@
 import p5 from "p5";
 import { Grid } from "./types";
-import { parseRequestedGoal } from "./request";
 import { DiceController } from "./diceController";
 import { renderGrid } from "./gridRenderer";
 import { loadSolutions } from "./solutionService";
@@ -18,7 +17,6 @@ import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
   };
   refreshInfoLabel();
 
-  const requested = parseRequestedGoal();
   const diceController = new DiceController(GRID_SIZE);
   const logInitialDiceTopFaces = (grid: Grid): void => {
     const topFaceValues = diceController.getTopFaceValues();
@@ -42,13 +40,7 @@ import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
   const lightColor = LIGHT_COLOR;
 
   const loadAndSelectSolution = async (): Promise<void> => {
-    const result = await loadSolutions(requested);
-    if (result.redirectTo) {
-      if (window.location.pathname !== result.redirectTo) {
-        window.location.replace(result.redirectTo);
-      }
-      return;
-    }
+    const result = await loadSolutions();
     if (result.goalGrid) {
       goalGrid = result.goalGrid;
     }

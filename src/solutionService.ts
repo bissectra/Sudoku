@@ -1,53 +1,31 @@
-import type { Grid, RequestedGoal, SolutionPayload, SolutionLoadResult } from "./types";
+import type { Grid, SolutionLoadResult } from "./types";
+import { GRID_SIZE } from "./boardLayout";
 
-export const loadSolutions = async (
-  requested: RequestedGoal
-): Promise<SolutionLoadResult> => {
-  try {
-    const response = await fetch("/solutions.json");
-    if (!response.ok) {
-      throw new Error(`Failed to load solutions.json (${response.status})`);
-    }
-    const payload: SolutionPayload = await response.json();
-    if (payload.length === 0) {
-      return { startGrid: null, goalGrid: null, label: "No solutions available" };
-    }
-
-    if (payload.length < 2) {
-      const onlyGrid = payload[0];
-      return {
-        startGrid: onlyGrid,
-        goalGrid: onlyGrid,
-        label: "Need at least two solutions to display start and goal",
-      };
-    }
-
-    const fallbackPath = "/1";
-    const invalidSegment =
-      !requested.segmentCountValid ||
-      requested.parsedGoal === null ||
-      requested.parsedGoal < 1 ||
-      requested.parsedGoal > payload.length;
-
-    if (invalidSegment) {
-      return {
-        startGrid: null,
-        goalGrid: null,
-        label: "",
-        redirectTo: fallbackPath,
-      };
-    }
-
-    const goalIndex = requested.goalZeroBased;
-    const label = `Goal ${goalIndex + 1} of ${payload.length}`;
-    const goalGrid = payload[goalIndex];
-    return {
-      startGrid: goalGrid,
-      goalGrid,
-      label,
-    };
-  } catch (error) {
-    console.error(error);
-    return { startGrid: null, goalGrid: null, label: "Unable to load solutions" };
+const createRandomGrid = (size: number): Grid => {
+  const totalCells = size * size;
+  const cells = Array<string>(totalCells).fill(".");
+  const minDice = Math.max(1, Math.floor(totalCells * 0.2));
+  const maxDice = Math.max(minDice, Math.floor(totalCells * 0.4));
+  const diceCount = Math.floor(minDice + Math.random() * (maxDice - minDice));
+  const chosenIndices = new Set<number>();
+  while (chosenIndices.size < diceCount) {
+    const index = Math.floor(Math.random() * totalCells);
+    chosenIndices.add(index);
   }
+  for (const index of chosenIndices) {
+    cells[index] = "#";
+  }
+
+  return Array.from({ length: size }, (_, row) =>
+    cells.slice(row * size, row * size + size).join("")
+  );
+};
+
+export const loadSolutions = async (): Promise<SolutionLoadResult> => {
+  const grid = createRandomGrid(GRID_SIZE);
+  return {
+    startGrid: grid,
+    goalGrid: grid,
+    label: "Random grid",
+  };
 };
