@@ -398,7 +398,8 @@ const sketch = (s: p5): void => {
     s.directionalLight(lightR, lightG, lightB, 0, 1, 0);
     s.directionalLight(lightR, lightG, lightB, 0, -1, 0);
     s.directionalLight(lightR, lightG, lightB, 0, 0, -1);
-    s.orbitControl();
+    // uncomment to enable mouse orbit control
+    // s.orbitControl();
     s.push();
     s.scale(1.5);
     drawGrid();
