@@ -1,4 +1,9 @@
-import { CubeOrientation, DICE_ROTATIONS } from "./orientation";
+import {
+  CubeOrientation,
+  DICE_ROTATIONS,
+  Orientation,
+  ORIENTATION_OPPOSITE,
+} from "./orientation";
 import type { DiceRotation, Grid, RollingAnimation, RollingState } from "./types";
 
 const RANDOM_SEED = 0xdeadbeef;
@@ -81,6 +86,41 @@ export class DiceController {
         }
       }
     }
+  }
+
+  private getTopFaceValueFromOrientation(orientation: CubeOrientation): number {
+    if (orientation.z === Orientation.TOP) {
+      return 1;
+    }
+    if (ORIENTATION_OPPOSITE[orientation.z] === Orientation.TOP) {
+      return 6;
+    }
+    if (orientation.y === Orientation.TOP) {
+      return 5;
+    }
+    if (ORIENTATION_OPPOSITE[orientation.y] === Orientation.TOP) {
+      return 2;
+    }
+    if (orientation.x === Orientation.TOP) {
+      return 3;
+    }
+    if (ORIENTATION_OPPOSITE[orientation.x] === Orientation.TOP) {
+      return 4;
+    }
+    throw new Error("Unable to determine top face value for dice orientation.");
+  }
+
+  getTopFaceValue(cellIndex: number): number | null {
+    if (!this.diceCellsMask[cellIndex]) {
+      return null;
+    }
+    return this.getTopFaceValueFromOrientation(this.diceOrientations[cellIndex]);
+  }
+
+  getTopFaceValues(): Array<number | null> {
+    return Array.from({ length: this.totalCells }, (_, index) =>
+      this.getTopFaceValue(index)
+    );
   }
 
   computeRollingAnimation(): RollingAnimation | null {

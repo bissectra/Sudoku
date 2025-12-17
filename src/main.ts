@@ -20,6 +20,24 @@ import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
 
   const requested = parseRequestedSolutionPair();
   const diceController = new DiceController(GRID_SIZE);
+  const logInitialDiceTopFaces = (grid: Grid): void => {
+    const topFaceValues = diceController.getTopFaceValues();
+    const rows: string[] = [];
+    for (let row = 0; row < GRID_SIZE; row += 1) {
+      const rowValues: string[] = [];
+      for (let col = 0; col < GRID_SIZE; col += 1) {
+        if (grid[row][col] !== "#") {
+          rowValues.push(".");
+          continue;
+        }
+        const cellIndex = row * GRID_SIZE + col;
+        const topValue = topFaceValues[cellIndex];
+        rowValues.push(topValue !== null && topValue !== undefined ? `${topValue}` : "?");
+      }
+      rows.push(rowValues.join(" "));
+    }
+    console.log("Initial dice top faces:\n" + rows.join("\n"));
+  };
   const interaction = new InteractionController(DRAG_DISTANCE_THRESHOLD);
   const lightColor = LIGHT_COLOR;
 
@@ -36,6 +54,7 @@ import { LIGHT_COLOR, GRID_SIZE, DRAG_DISTANCE_THRESHOLD } from "./boardLayout";
     }
     if (result.startGrid) {
       diceController.setDiceMaskFromGrid(result.startGrid);
+      logInitialDiceTopFaces(result.startGrid);
     }
     solutionLabel = result.label || solutionLabel;
     refreshInfoLabel();
