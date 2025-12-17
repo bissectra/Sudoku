@@ -204,8 +204,8 @@ const sketch = (s: p5): void => {
         const rowOffset = row * (cellSize + cellSpacing);
         s.translate(columnOffset, rowOffset, boxDepth / 2);
 
-        const filledColor = s.color(255, 99, 71); // Tomato
-        const emptyColor = s.color(255, 223, 186); // Light Peach
+        const filledColor = s.color(70, 130, 180); // Steel Blue
+        const emptyColor = s.color(240, 248, 255); // Alice Blue
 
         s.fill(isFilled ? filledColor : emptyColor);
         s.stroke(40);
