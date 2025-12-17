@@ -146,11 +146,29 @@ def find_solutions() -> list[tuple[int, ...]]:
     ]
 
 
-def write_solutions_with_scores(path: str = "solution.txt") -> None:
-    solutions = find_solutions()
-    scored = []
-    for idx, sol in enumerate(solutions, start=1):
+def grid_is_within_line_limit(grid: Grid, limit: int = 6) -> bool:
+    """Return True if no row or column contains more than `limit` '#' marks."""
+    if any(row.count("#") > limit for row in grid):
+        return False
+    for col in range(8):
+        if sum(1 for row in range(8) if grid[row][col] == "#") > limit:
+            return False
+    return True
+
+
+def filtered_solution_grids(limit: int = 6) -> list[tuple[int, Grid]]:
+    """Return each solution grid that satisfies the row/column limit."""
+    filtered: list[tuple[int, Grid]] = []
+    for idx, sol in enumerate(find_solutions(), start=1):
         grid = build_grid(sol)
+        if grid_is_within_line_limit(grid, limit):
+            filtered.append((idx, grid))
+    return filtered
+
+
+def write_solutions_with_scores(path: str = "solution.txt") -> None:
+    scored = []
+    for idx, grid in filtered_solution_grids():
         breakdown = prettiness_score(grid)
         scored.append((breakdown, idx, grid))
 
@@ -196,10 +214,8 @@ def write_solutions_json(path: str = "solutions.json") -> None:
     ]
     """
 
-    solutions = find_solutions()
     scored: list[tuple[dict[str, float | int], int, Grid]] = []
-    for idx, sol in enumerate(solutions, start=1):
-        grid = build_grid(sol)
+    for idx, grid in filtered_solution_grids():
         breakdown = prettiness_score(grid)
         scored.append((breakdown, idx, grid))
 
