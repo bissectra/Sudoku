@@ -12,6 +12,34 @@ type RequestedIndexInfo = {
 
 type DiceRotation = "left" | "up" | "right" | "down";
 type DiceOrientation = DiceRotation[];
+type RotationAxis = "x" | "y";
+type RollingState = {
+  cellIndex: number;
+  rotation: DiceRotation;
+  startTime: number;
+};
+type RollingAnimation = RollingState & {
+  progress: number;
+};
+
+const ROLL_DURATION_MS = 320;
+
+const rotationAxisAngleMap: Record<DiceRotation, { axis: RotationAxis; angle: number }> = {
+  left: { axis: "y", angle: -90 },
+  right: { axis: "y", angle: 90 },
+  up: { axis: "x", angle: 90 },
+  down: { axis: "x", angle: -90 },
+};
+
+const applyRotationTransform = (p: p5, rotation: DiceRotation, multiplier = 1): void => {
+  const { axis, angle } = rotationAxisAngleMap[rotation];
+  const actualAngle = angle * multiplier;
+  if (axis === "x") {
+    p.rotateX(actualAngle);
+  } else {
+    p.rotateY(actualAngle);
+  }
+};
 
 type RendererWithCamera = {
   _curCamera?: {
@@ -82,6 +110,7 @@ const sketch = (s: p5): void => {
   let lastDragPoint: { x: number; y: number } | null = null;
   let dragRotationApplied = false;
   let hoveredDiceCell: number | null = null;
+  let rollingState: RollingState | null = null;
 
   const RANDOM_SEED = 0xdeadbeef;
   let rngState = RANDOM_SEED;
@@ -101,6 +130,33 @@ const sketch = (s: p5): void => {
     diceCellsMask[0] = true;
   }
   const diceOrientations: DiceOrientation[] = diceCellsMask.map(() => randomDiceOrientation());
+
+  const computeRollingAnimation = (): RollingAnimation | null => {
+    if (rollingState === null) {
+      return null;
+    }
+    const elapsed = performance.now() - rollingState.startTime;
+    return {
+      ...rollingState,
+      progress: Math.min(1, elapsed / ROLL_DURATION_MS),
+    };
+  };
+
+  const startRollingAnimation = (cellIndex: number, rotation: DiceRotation): void => {
+    rollingState = {
+      cellIndex,
+      rotation,
+      startTime: performance.now(),
+    };
+  };
+
+  const finalizeRollingAnimation = (): void => {
+    if (rollingState === null) {
+      return;
+    }
+    diceOrientations[rollingState.cellIndex].push(rollingState.rotation);
+    rollingState = null;
+  };
 
   const dicePipPattern: Record<number, [number, number][]> = {
     1: [[0, 0]],
@@ -200,11 +256,12 @@ const sketch = (s: p5): void => {
 
   const drawDiceForCell = (
     cellIndex: number,
-    isHovered: boolean
+    isHovered: boolean,
+    rollingAnimation: RollingAnimation | null
   ): void => {
     const diceSize = cellSize * 0.8;
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
-    const orientation = diceOrientations[cellIndex].slice().reverse();
+    const baseOrientation = diceOrientations[cellIndex].slice().reverse();
 
     s.push();
     s.translate(0, 0, diceElevation);
@@ -214,22 +271,11 @@ const sketch = (s: p5): void => {
     s.strokeWeight(1);
 
     s.push();
-    // Apply the stored rotations in sequence relative to the standard die orientation.
-    for (const rotation of orientation) {
-      switch (rotation) {
-        case "left":
-          s.rotateY(-90);
-          break;
-        case "right":
-          s.rotateY(90);
-          break;
-        case "up":
-          s.rotateX(90);
-          break;
-        case "down":
-          s.rotateX(-90);
-          break;
-      }
+    if (rollingAnimation?.cellIndex === cellIndex) {
+      applyRotationTransform(s, rollingAnimation.rotation, rollingAnimation.progress);
+    }
+    for (const rotation of baseOrientation) {
+      applyRotationTransform(s, rotation);
     }
     s.scale(diceSize);
     drawDice();
@@ -309,6 +355,9 @@ const sketch = (s: p5): void => {
   };
 
   s.mousePressed = (): void => {
+    if (rollingState !== null) {
+      return;
+    }
     if (hoveredDiceCell !== null && diceCellsMask[hoveredDiceCell]) {
       activeDragCell = hoveredDiceCell;
       lastDragPoint = { x: s.mouseX, y: s.mouseY };
@@ -317,6 +366,9 @@ const sketch = (s: p5): void => {
   };
 
   s.mouseDragged = (): void => {
+    if (rollingState !== null) {
+      return;
+    }
     if (activeDragCell === null || lastDragPoint === null) {
       return;
     }
@@ -336,7 +388,7 @@ const sketch = (s: p5): void => {
         : dy > 0
         ? "down"
         : "up";
-    diceOrientations[activeDragCell].push(rotation);
+    startRollingAnimation(activeDragCell, rotation);
     dragRotationApplied = true;
     lastDragPoint = { x: s.mouseX, y: s.mouseY };
   };
@@ -347,7 +399,7 @@ const sketch = (s: p5): void => {
     dragRotationApplied = false;
   };
 
-  const drawGrid = (): void => {
+  const drawGrid = (rollingAnimation: RollingAnimation | null): void => {
     if (!selectedGrid) {
       return;
     }
@@ -448,7 +500,7 @@ const sketch = (s: p5): void => {
         const shouldRenderDice = diceCellsMask[cellIndex];
         const isHovered = shouldRenderDice && bestHoverIndex === cellIndex;
         if (shouldRenderDice) {
-          drawDiceForCell(cellIndex, isHovered);
+          drawDiceForCell(cellIndex, isHovered, rollingAnimation);
         }
         s.pop();
       }
@@ -469,10 +521,14 @@ const sketch = (s: p5): void => {
   
     // uncomment to enable mouse orbit control
     // s.orbitControl();
+    const currentRollingAnimation = computeRollingAnimation();
     s.push();
     s.scale(1.5);
-    drawGrid();
+    drawGrid(currentRollingAnimation);
     s.pop();
+    if (currentRollingAnimation && currentRollingAnimation.progress >= 1) {
+      finalizeRollingAnimation();
+    }
   };
 };
 
