@@ -94,7 +94,6 @@ const sketch = (s: p5): void => {
     const diceSize = cellSize * 0.6;
     const pipGap = diceSize * 0.26;
     const pipRadius = diceSize * 0.1;
-    const pipDepth = diceSize * 0.18;
     const pipThickness = 0.25;
     const diceValue = ((row * 8 + col) % 6) + 1;
     const pipPositions = dicePipPattern[diceValue] ?? dicePipPattern[1];
@@ -108,21 +107,39 @@ const sketch = (s: p5): void => {
     s.strokeWeight(1);
     s.box(diceSize, diceSize, diceSize);
 
+    const drawPips = (): void => {
+      pipPositions.forEach(([offsetX, offsetY]) => {
+        s.push();
+        s.translate(offsetX * pipGap, offsetY * pipGap, 0);
+        s.scale(1, 1, pipThickness);
+        s.noStroke();
+        s.fill(0);
+        s.specularMaterial(10);
+        s.shininess(40);
+        s.sphere(pipRadius, 20, 16);
+        s.pop();
+      });
+    };
+
+    const drawFacePips = (rotX = 0, rotY = 0, rotZ = 0): void => {
+      s.push();
+      s.rotateX(rotX);
+      s.rotateY(rotY);
+      s.rotateZ(rotZ);
+      s.translate(0, 0, diceSize / 2 + 0.3);
+      drawPips();
+      s.pop();
+    };
+
     s.push();
     s.noStroke();
     s.fill(35);
-    const pipZ = diceSize / 2 + 0.3;
-    pipPositions.forEach(([offsetX, offsetY]) => {
-      s.push();
-      s.translate(offsetX * pipGap, offsetY * pipGap, pipZ);
-      s.scale(1, 1, pipThickness);
-      s.noStroke();
-      s.fill(0);
-      s.specularMaterial(10);
-      s.shininess(40);
-      s.sphere(pipRadius, 20, 16);
-      s.pop();
-    });
+    drawFacePips();
+    drawFacePips(180, 0, 0);
+    drawFacePips(-90, 0, 0);
+    drawFacePips(90, 0, 0);
+    drawFacePips(0, -90, 0);
+    drawFacePips(0, 90, 0);
     s.pop();
     s.pop();
   };
