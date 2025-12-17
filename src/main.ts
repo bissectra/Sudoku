@@ -10,15 +10,6 @@ type RequestedIndexInfo = {
   parsedValue: number | null;
 };
 
-type Orientation = {
-  front: number;
-  back: number;
-  left: number;
-  right: number;
-  top: number;
-  bottom: number;
-};
-
 type RendererWithCamera = {
   _curCamera?: {
     cameraMatrix?: {
@@ -32,63 +23,6 @@ type RendererWithCamera = {
 
 type RendererAwareP5 = p5 & { _renderer?: RendererWithCamera };
 
-const rotateX = (orientation: Orientation): Orientation => ({
-  front: orientation.top,
-  back: orientation.bottom,
-  top: orientation.back,
-  bottom: orientation.front,
-  left: orientation.left,
-  right: orientation.right,
-});
-
-const rotateY = (orientation: Orientation): Orientation => ({
-  front: orientation.left,
-  back: orientation.right,
-  right: orientation.front,
-  left: orientation.back,
-  top: orientation.top,
-  bottom: orientation.bottom,
-});
-
-const rotateZ = (orientation: Orientation): Orientation => ({
-  front: orientation.front,
-  back: orientation.back,
-  top: orientation.right,
-  bottom: orientation.left,
-  right: orientation.bottom,
-  left: orientation.top,
-});
-
-const generateOrientations = (): Orientation[] => {
-  const base: Orientation = {
-    top: 1,
-    right: 2,
-    back: 3,
-    front: 4,
-    left: 5,
-    bottom: 6,
-  };
-
-    const encode = (orientation: Orientation): string =>
-      `${orientation.front}-${orientation.back}-${orientation.left}-${orientation.right}-${orientation.top}-${orientation.bottom}`;
-
-    const stack: Orientation[] = [base];
-    const seen = new Set<string>();
-    const orientations: Orientation[] = [];
-
-    while (stack.length > 0 && seen.size < 24) {
-      const current = stack.pop()!;
-      const key = encode(current);
-      if (seen.has(key)) {
-        continue;
-      }
-      seen.add(key);
-      orientations.push(current);
-      stack.push(rotateZ(current), rotateX(rotateX(current)), rotateY(current));
-    }
-
-  return orientations;
-};
 
 const parseRequestedIndex = (): RequestedIndexInfo => {
   const segments = window.location.pathname.split("/").filter(Boolean);
@@ -130,8 +64,6 @@ const sketch = (s: p5): void => {
   };
   refreshInfoLabel();
   const requested = parseRequestedIndex();
-
-  const orientationPresets = generateOrientations();
 
   // Dimensions for the drawing grid
   const cellSize = 50;
@@ -175,14 +107,10 @@ const sketch = (s: p5): void => {
   };
 
   const drawDiceForCell = (
-    orientation: Orientation,
     cellIndex: number,
     isHovered: boolean
   ): void => {
     const diceSize = cellSize * 0.6;
-    const pipGap = diceSize * 0.26;
-    const pipRadius = diceSize * 0.1;
-    const pipThickness = 0.25;
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
 
     s.push();
@@ -191,45 +119,11 @@ const sketch = (s: p5): void => {
     s.specularMaterial(255);
     s.stroke(210);
     s.strokeWeight(1);
-    s.box(diceSize, diceSize, diceSize);
-
-    const drawFacePips = (
-      rotX = 0,
-      rotY = 0,
-      rotZ = 0,
-      faceValue = 1
-    ): void => {
-      const pipPositions = dicePipPattern[faceValue] ?? dicePipPattern[1];
-
-      s.push();
-      s.rotateX(rotX);
-      s.rotateY(rotY);
-      s.rotateZ(rotZ);
-      s.translate(0, 0, diceSize / 2 + 0.3);
-      pipPositions.forEach(([offsetX, offsetY]) => {
-        s.push();
-        s.translate(offsetX * pipGap, offsetY * pipGap, 0);
-        s.scale(1, 1, pipThickness);
-        s.noStroke();
-        s.fill(0);
-        s.specularMaterial(10);
-        s.shininess(40);
-        s.sphere(pipRadius, 20, 16);
-        s.pop();
-      });
-      s.pop();
-    };
 
     s.push();
     s.noStroke();
     const faceFill = isHovered ? 80 : 35;
     s.fill(faceFill);
-    drawFacePips(0, 0, 0, orientation.top);
-    drawFacePips(180, 0, 0, orientation.bottom);
-    drawFacePips(-90, 0, 0, orientation.front);
-    drawFacePips(90, 0, 0, orientation.back);
-    drawFacePips(0, -90, 0, orientation.left);
-    drawFacePips(0, 90, 0, orientation.right);
     s.pop();
     if (isHovered) {
       s.push();
@@ -391,14 +285,9 @@ const sketch = (s: p5): void => {
         s.box(cellSize, cellSize, boxDepth);
 
         const cellIndex = row * 8 + col;
-        const orientation = orientationPresets[cellIndex];
-        if (!orientation) {
-          s.pop();
-          continue;
-        }
 
         const isHovered = bestHoverIndex === cellIndex;
-        drawDiceForCell(orientation, cellIndex, isHovered);
+        drawDiceForCell(cellIndex, isHovered);
         s.pop();
       }
     }
