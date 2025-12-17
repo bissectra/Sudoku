@@ -186,19 +186,14 @@ def write_solutions_with_scores(path: str = "solution.txt") -> None:
 
 
 def write_solutions_json(path: str = "solutions.json") -> None:
-    """Generate a JSON file with all ordered solutions, without metrics.
+    """Generate a JSON file containing only an array of grids (no metadata).
 
     JSON structure:
-    {
-      "number_of_solutions": int,
-      "solutions": [
-        {
-          "rank": int,
-          "grid": ["........", ...]  # 8 strings, each representing a row
-        },
-        ...
-      ]
-    }
+    [
+      ["........", ...],  # grid 1: 8 strings, each representing a row
+      ["........", ...],  # grid 2
+      ...
+    ]
     """
 
     solutions = find_solutions()
@@ -216,16 +211,10 @@ def write_solutions_json(path: str = "solutions.json") -> None:
         x[1],
     ))
 
-    output = {
-        "number_of_solutions": len(scored),
-        "solutions": []
-    }
+    output: list[Grid] = []
 
-    for new_idx, (_score, _orig_idx, grid) in enumerate(scored, start=1):
-        output["solutions"].append({
-            "rank": new_idx,
-            "grid": grid,
-        })
+    for _new_idx, (_score, _orig_idx, grid) in enumerate(scored, start=1):
+        output.append(grid)
 
     with open(path, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
