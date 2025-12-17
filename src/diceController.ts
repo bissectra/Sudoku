@@ -29,7 +29,7 @@ export class DiceController {
   private rngState: number;
   private rollingState: RollingState | null = null;
   private pendingRollback: PendingRollback | null = null;
-  private invalidHighlightCell: number | null = null;
+  private invalidHighlightCells: Set<number> = new Set();
   private invalidHighlightExpiry = 0;
   private readonly gridSize: number;
   private readonly totalCells: number;
@@ -187,9 +187,15 @@ export class DiceController {
     }
   }
 
-  private isLatinSquareValid(): boolean {
-    const rowSets: Set<number>[] = Array.from({ length: this.gridSize }, () => new Set());
-    const colSets: Set<number>[] = Array.from({ length: this.gridSize }, () => new Set());
+  private validateLatinSquare(): { valid: boolean; conflicts: number[] } {
+    const rowMaps: Map<number, number>[] = Array.from(
+      { length: this.gridSize },
+      () => new Map()
+    );
+    const colMaps: Map<number, number>[] = Array.from(
+      { length: this.gridSize },
+      () => new Map()
+    );
     for (let index = 0; index < this.totalCells; index += 1) {
       if (!this.diceCellsMask[index]) {
         continue;
@@ -200,13 +206,18 @@ export class DiceController {
       }
       const row = Math.floor(index / this.gridSize);
       const col = index % this.gridSize;
-      if (rowSets[row].has(value) || colSets[col].has(value)) {
-        return false;
+      const rowConflict = rowMaps[row].get(value);
+      if (rowConflict !== undefined) {
+        return { valid: false, conflicts: [rowConflict, index] };
       }
-      rowSets[row].add(value);
-      colSets[col].add(value);
+      rowMaps[row].set(value, index);
+      const colConflict = colMaps[col].get(value);
+      if (colConflict !== undefined) {
+        return { valid: false, conflicts: [colConflict, index] };
+      }
+      colMaps[col].set(value, index);
     }
-    return true;
+    return { valid: true, conflicts: [] };
   }
 
   private getTopFaceValueFromOrientation(orientation: CubeOrientation): number {
@@ -243,6 +254,16 @@ export class DiceController {
     };
   }
 
+  private updateHighlightState(): void {
+    if (this.invalidHighlightCells.size === 0) {
+      return;
+    }
+    const now = performance.now();
+    if (now >= this.invalidHighlightExpiry) {
+      this.invalidHighlightCells.clear();
+    }
+  }
+
   processFrame(): void {
     const now = performance.now();
     if (
@@ -252,13 +273,15 @@ export class DiceController {
     ) {
       const rollback = this.pendingRollback;
       this.pendingRollback = null;
-      this.invalidHighlightCell = null;
+      this.invalidHighlightCells.clear();
       this.startRollingAnimation(rollback.sourceCellIndex, rollback.rotation);
+      return;
     }
+    this.updateHighlightState();
   }
 
   isCellInvalidHighlight(cellIndex: number): boolean {
-    return this.invalidHighlightCell === cellIndex;
+    return this.invalidHighlightCells.has(cellIndex);
   }
 
   startRollingAnimation(cellIndex: number, rotation: DiceRotation): void {
@@ -289,17 +312,21 @@ export class DiceController {
     this.diceCellsMask[cellIndex] = false;
     this.diceCellsMask[targetCellIndex] = true;
     this.rollingState = null;
-    if (!this.isLatinSquareValid()) {
-      this.handleInvalidMove(cellIndex, targetCellIndex, rotation);
+    const validation = this.validateLatinSquare();
+    if (!validation.valid) {
+      this.handleInvalidMove(cellIndex, targetCellIndex, rotation, validation.conflicts);
     }
   }
 
   private handleInvalidMove(
     cellIndex: number,
     targetCellIndex: number,
-    rotation: DiceRotation
+    rotation: DiceRotation,
+    conflicts: number[]
   ): void {
-    this.invalidHighlightCell = targetCellIndex;
+    this.invalidHighlightCells.clear();
+    conflicts.forEach((index) => this.invalidHighlightCells.add(index));
+    this.invalidHighlightCells.add(targetCellIndex);
     this.invalidHighlightExpiry = performance.now() + INVALID_HIGHLIGHT_DURATION_MS;
     this.pendingRollback = {
       sourceCellIndex: targetCellIndex,
