@@ -1,5 +1,5 @@
 import { CubeOrientation, DICE_ROTATIONS } from "./orientation";
-import type { DiceRotation, RollingAnimation, RollingState } from "./types";
+import type { DiceRotation, Grid, RollingAnimation, RollingState } from "./types";
 
 const RANDOM_SEED = 0xdeadbeef;
 const ROLL_DURATION_MS = 320;
@@ -10,19 +10,17 @@ export class DiceController {
   private rngState: number;
   private rollingState: RollingState | null = null;
   private readonly gridSize: number;
+  private readonly totalCells: number;
 
-  constructor(gridSize: number, density = 0.45, seed = RANDOM_SEED) {
+  constructor(gridSize: number, seed = RANDOM_SEED) {
     this.gridSize = gridSize;
+    this.totalCells = gridSize * gridSize;
     this.rngState = seed;
-    const totalCells = gridSize * gridSize;
-    this.diceCellsMask = Array.from(
-      { length: totalCells },
-      () => this.seededRandom() < density
+    this.diceCellsMask = Array(this.totalCells).fill(false);
+    this.diceOrientations = Array.from(
+      { length: this.totalCells },
+      () => this.randomDiceOrientation()
     );
-    if (!this.diceCellsMask.some(Boolean)) {
-      this.diceCellsMask[0] = true;
-    }
-    this.diceOrientations = this.diceCellsMask.map(() => this.randomDiceOrientation());
   }
 
   private seededRandom(): number {
@@ -70,6 +68,19 @@ export class DiceController {
       return null;
     }
     return targetRow * this.gridSize + targetCol;
+  }
+
+  setDiceMaskFromGrid(grid: Grid): void {
+    for (let row = 0; row < this.gridSize; row += 1) {
+      for (let col = 0; col < this.gridSize; col += 1) {
+        const cellIndex = row * this.gridSize + col;
+        const hasDice = grid[row][col] === "#";
+        this.diceCellsMask[cellIndex] = hasDice;
+        if (hasDice) {
+          this.diceOrientations[cellIndex] = this.randomDiceOrientation();
+        }
+      }
+    }
   }
 
   computeRollingAnimation(): RollingAnimation | null {

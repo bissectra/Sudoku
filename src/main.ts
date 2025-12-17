@@ -33,6 +33,7 @@ const sketch = (s: p5): void => {
     }
     if (result.grid) {
       selectedGrid = result.grid;
+      diceController.setDiceMaskFromGrid(result.grid);
     }
     solutionLabel = result.label || solutionLabel;
     refreshInfoLabel();
