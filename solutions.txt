@@ -1,6 +1,6 @@
 Number of solutions: 140
 
-Solution 1: transitions=88 | components=21 | std=1.732 | avg_dist=2.819
+Solution 1: transitions=88 | components=21 | avg_dist=2.8193 | std=1.7321
 . # . # # . # .
 # . # . . # . #
 . # . # # . # .
@@ -10,7 +10,7 @@ Solution 1: transitions=88 | components=21 | std=1.732 | avg_dist=2.819
 # . # . . # . #
 . # . # # . # .
 
-Solution 2: transitions=88 | components=20 | std=1.732 | avg_dist=3.291
+Solution 2: transitions=88 | components=20 | avg_dist=3.2907 | std=1.7321
 # # . # # . # #
 # . # . . # . #
 . # . # # . # .
@@ -20,7 +20,7 @@ Solution 2: transitions=88 | components=20 | std=1.732 | avg_dist=3.291
 # . # . . # . #
 # # . # # . # #
 
-Solution 3: transitions=80 | components=17 | std=1.732 | avg_dist=2.943
+Solution 3: transitions=80 | components=17 | avg_dist=2.9426 | std=1.7321
 # . # . . # . #
 . # . # # . # .
 # . # # # # . #
@@ -30,7 +30,7 @@ Solution 3: transitions=80 | components=17 | std=1.732 | avg_dist=2.943
 . # . # # . # .
 # . # . . # . #
 
-Solution 4: transitions=80 | components=13 | std=1.732 | avg_dist=2.976
+Solution 4: transitions=80 | components=13 | avg_dist=2.9764 | std=1.7321
 . # . # # . # .
 # . # . . # . #
 . # # # # # # .
@@ -40,7 +40,7 @@ Solution 4: transitions=80 | components=13 | std=1.732 | avg_dist=2.976
 # . # . . # . #
 . # . # # . # .
 
-Solution 5: transitions=80 | components=13 | std=1.732 | avg_dist=3.076
+Solution 5: transitions=80 | components=13 | avg_dist=3.0757 | std=1.7321
 . # # . . # # .
 # # . # # . # #
 # . # . . # . #
@@ -50,7 +50,7 @@ Solution 5: transitions=80 | components=13 | std=1.732 | avg_dist=3.076
 # # . # # . # #
 . # # . . # # .
 
-Solution 6: transitions=80 | components=12 | std=1.732 | avg_dist=3.134
+Solution 6: transitions=80 | components=12 | avg_dist=3.1336 | std=1.7321
 . # . # # . # .
 # # # . . # # #
 . # . # # . # .
@@ -60,7 +60,7 @@ Solution 6: transitions=80 | components=12 | std=1.732 | avg_dist=3.134
 # # # . . # # #
 . # . # # . # .
 
-Solution 7: transitions=72 | components=17 | std=1.732 | avg_dist=2.785
+Solution 7: transitions=72 | components=17 | avg_dist=2.7855 | std=1.7321
 # . # . . # . #
 . # . # # . # .
 # . . # # . . #
@@ -70,17 +70,7 @@ Solution 7: transitions=72 | components=17 | std=1.732 | avg_dist=2.785
 . # . # # . # .
 # . # . . # . #
 
-Solution 8: transitions=72 | components=16 | std=1.732 | avg_dist=3.377
-# . # # # # . #
-. # . # # . # .
-# . # . . # . #
-# # . . . . # #
-# # . . . . # #
-# . # . . # . #
-. # . # # . # .
-# . # # # # . #
-
-Solution 9: transitions=72 | components=13 | std=1.732 | avg_dist=2.806
+Solution 8: transitions=72 | components=13 | avg_dist=2.8063 | std=1.7321
 # . . # # . . #
 . # # . . # # .
 . # . # # . # .
@@ -90,7 +80,7 @@ Solution 9: transitions=72 | components=13 | std=1.732 | avg_dist=2.806
 . # # . . # # .
 # . . # # . . #
 
-Solution 10: transitions=72 | components=13 | std=1.732 | avg_dist=2.906
+Solution 9: transitions=72 | components=13 | avg_dist=2.9055 | std=1.7321
 . . # # # # . .
 . # . # # . # .
 # . # . . # . #
@@ -100,7 +90,7 @@ Solution 10: transitions=72 | components=13 | std=1.732 | avg_dist=2.906
 . # . # # . # .
 . . # # # # . .
 
-Solution 11: transitions=72 | components=13 | std=3.317 | avg_dist=3.015
+Solution 10: transitions=72 | components=13 | avg_dist=3.0152 | std=3.3166
 . # . # # . # .
 # # . # # . # #
 . . # . . # . .
@@ -110,7 +100,7 @@ Solution 11: transitions=72 | components=13 | std=3.317 | avg_dist=3.015
 # # . # # . # #
 . # . # # . # .
 
-Solution 12: transitions=72 | components=13 | std=3.317 | avg_dist=3.034
+Solution 11: transitions=72 | components=13 | avg_dist=3.0345 | std=3.3166
 . # . # # . # .
 # . # # # # . #
 . # . . . . # .
@@ -120,7 +110,7 @@ Solution 12: transitions=72 | components=13 | std=3.317 | avg_dist=3.034
 # . # # # # . #
 . # . # # . # .
 
-Solution 13: transitions=72 | components=13 | std=3.317 | avg_dist=3.162
+Solution 12: transitions=72 | components=13 | avg_dist=3.1617 | std=3.3166
 # . # # # # . #
 . # . . . . # .
 # . # # # # . #
@@ -130,7 +120,17 @@ Solution 13: transitions=72 | components=13 | std=3.317 | avg_dist=3.162
 . # . . . . # .
 # . # # # # . #
 
-Solution 14: transitions=72 | components=13 | std=1.732 | avg_dist=3.233
+Solution 13: transitions=72 | components=12 | avg_dist=3.1811 | std=3.3166
+# . # # # # . #
+. . # . . # . .
+# # . # # . # #
+# . # . . # . #
+# . # . . # . #
+# # . # # . # #
+. . # . . # . .
+# . # # # # . #
+
+Solution 14: transitions=72 | components=13 | avg_dist=3.2328 | std=1.7321
 # # # . . # # #
 # . . # # . . #
 # . # . . # . #
@@ -140,7 +140,7 @@ Solution 14: transitions=72 | components=13 | std=1.732 | avg_dist=3.233
 # . . # # . . #
 # # # . . # # #
 
-Solution 15: transitions=72 | components=13 | std=1.732 | avg_dist=3.254
+Solution 15: transitions=72 | components=13 | avg_dist=3.2536 | std=1.7321
 # # . # # . # #
 # . # . . # . #
 . # # . . # # .
@@ -150,17 +150,17 @@ Solution 15: transitions=72 | components=13 | std=1.732 | avg_dist=3.254
 # . # . . # . #
 # # . # # . # #
 
-Solution 16: transitions=72 | components=12 | std=3.317 | avg_dist=3.181
+Solution 16: transitions=72 | components=16 | avg_dist=3.3769 | std=1.7321
 # . # # # # . #
-. . # . . # . .
-# # . # # . # #
+. # . # # . # .
 # . # . . # . #
+# # . . . . # #
+# # . . . . # #
 # . # . . # . #
-# # . # # . # #
-. . # . . # . .
+. # . # # . # .
 # . # # # # . #
 
-Solution 17: transitions=64 | components=13 | std=3.317 | avg_dist=2.471
+Solution 17: transitions=64 | components=13 | avg_dist=2.4712 | std=3.3166
 . . # . . # . .
 . # . # # . # .
 # . # # # # . #
@@ -170,7 +170,77 @@ Solution 17: transitions=64 | components=13 | std=3.317 | avg_dist=2.471
 . # . # # . # .
 . . # . . # . .
 
-Solution 18: transitions=64 | components=13 | std=3.317 | avg_dist=3.005
+Solution 18: transitions=64 | components=9 | avg_dist=2.6002 | std=3.3166
+. # . . . . # .
+# . # # # # . #
+. # . # # . # .
+. # # # # # # .
+. # # # # # # .
+. # . # # . # .
+# . # # # # . #
+. # . . . . # .
+
+Solution 19: transitions=64 | components=9 | avg_dist=2.8668 | std=1.7321
+# . # . . # . #
+. # # . . # # .
+# # . # # . # #
+. . # # # # . .
+. . # # # # . .
+# # . # # . # #
+. # # . . # # .
+# . # . . # . #
+
+Solution 20: transitions=64 | components=9 | avg_dist=2.8798 | std=1.7321
+. # # . . # # .
+# . # . . # . #
+# # . # # . # #
+. . # # # # . .
+. . # # # # . .
+# # . # # . # #
+# . # . . # . #
+. # # . . # # .
+
+Solution 21: transitions=64 | components=6 | avg_dist=2.9249 | std=1.7321
+# . # . . # . #
+. . # # # # . .
+# # # . . # # #
+. # . # # . # .
+. # . # # . # .
+# # # . . # # #
+. . # # # # . .
+# . # . . # . #
+
+Solution 22: transitions=64 | components=9 | avg_dist=2.9556 | std=1.7321
+. # # . . # # .
+# . . # # . . #
+# . # # # # . #
+. # # . . # # .
+. # # . . # # .
+# . # # # # . #
+# . . # # . . #
+. # # . . # # .
+
+Solution 23: transitions=64 | components=8 | avg_dist=2.9620 | std=1.7321
+# . # . . # . #
+. . # # # # . .
+# # . # # . # #
+. # # . . # # .
+. # # . . # # .
+# # . # # . # #
+. . # # # # . .
+# . # . . # . #
+
+Solution 24: transitions=64 | components=9 | avg_dist=2.9634 | std=1.7321
+# . . # # . . #
+. # # . . # # .
+. # # # # # # .
+# . # . . # . #
+# . # . . # . #
+. # # # # # # .
+. # # . . # # .
+# . . # # . . #
+
+Solution 25: transitions=64 | components=13 | avg_dist=3.0046 | std=3.3166
 # . # # # # . #
 . # . . . . # .
 # . . # # . . #
@@ -180,7 +250,27 @@ Solution 18: transitions=64 | components=13 | std=3.317 | avg_dist=3.005
 . # . . . . # .
 # . # # # # . #
 
-Solution 19: transitions=64 | components=13 | std=3.317 | avg_dist=3.063
+Solution 26: transitions=64 | components=5 | avg_dist=3.0240 | std=1.7321
+. . # # # # . .
+. # # . . # # .
+# # . # # . # #
+# . # . . # . #
+# . # . . # . #
+# # . # # . # #
+. # # . . # # .
+. . # # # # . .
+
+Solution 27: transitions=64 | components=6 | avg_dist=3.0345 | std=1.7321
+# # . . . . # #
+# . # # # # . #
+. # # . . # # .
+. # . # # . # .
+. # . # # . # .
+. # # . . # # .
+# . # # # # . #
+# # . . . . # #
+
+Solution 28: transitions=64 | components=13 | avg_dist=3.0627 | std=3.3166
 # . # # # # . #
 . . . # # . . .
 # . # . . # . #
@@ -190,7 +280,57 @@ Solution 19: transitions=64 | components=13 | std=3.317 | avg_dist=3.063
 . . . # # . . .
 # . # # # # . #
 
-Solution 20: transitions=64 | components=13 | std=3.317 | avg_dist=3.172
+Solution 29: transitions=64 | components=8 | avg_dist=3.0716 | std=1.7321
+# # . . . . # #
+# . # # # # . #
+. # . # # . # .
+. # # . . # # .
+. # # . . # # .
+. # . # # . # .
+# . # # # # . #
+# # . . . . # #
+
+Solution 30: transitions=64 | components=6 | avg_dist=3.0820 | std=1.7321
+# . # . . # . #
+. # # # # # # .
+# # . . . . # #
+. # . # # . # .
+. # . # # . # .
+# # . . . . # #
+. # # # # # # .
+# . # . . # . #
+
+Solution 31: transitions=64 | components=5 | avg_dist=3.0950 | std=1.7321
+. # # . . # # .
+# . # # # # . #
+# # . . . . # #
+. # . # # . # .
+. # . # # . # .
+# # . . . . # #
+# . # # # # . #
+. # # . . # # .
+
+Solution 32: transitions=64 | components=9 | avg_dist=3.0965 | std=1.7321
+. # . # # . # .
+# # # . . # # #
+. # # . . # # .
+# . . # # . . #
+# . . # # . . #
+. # # . . # # .
+# # # . . # # #
+. # . # # . # .
+
+Solution 33: transitions=64 | components=8 | avg_dist=3.1128 | std=1.7321
+. # # . . # # .
+# # . # # . # #
+# . . # # . . #
+. # # . . # # .
+. # # . . # # .
+# . . # # . . #
+# # . # # . # #
+. # # . . # # .
+
+Solution 34: transitions=64 | components=13 | avg_dist=3.1723 | std=3.3166
 # # . # # . # #
 # . . # # . . #
 . . # . . # . .
@@ -200,7 +340,17 @@ Solution 20: transitions=64 | components=13 | std=3.317 | avg_dist=3.172
 # . . # # . . #
 # # . # # . # #
 
-Solution 21: transitions=64 | components=13 | std=3.317 | avg_dist=3.220
+Solution 35: transitions=64 | components=9 | avg_dist=3.1916 | std=1.7321
+. # . # # . # .
+# . # # # # . #
+. # # . . # # .
+# # . . . . # #
+# # . . . . # #
+. # # . . # # .
+# . # # # # . #
+. # . # # . # .
+
+Solution 36: transitions=64 | components=13 | avg_dist=3.2198 | std=3.3166
 # . # # # # . #
 . # . # # . # .
 # . . . . . . #
@@ -210,117 +360,7 @@ Solution 21: transitions=64 | components=13 | std=3.317 | avg_dist=3.220
 . # . # # . # .
 # . # # # # . #
 
-Solution 22: transitions=64 | components=12 | std=3.317 | avg_dist=3.547
-# # # . . # # #
-# # . # # . # #
-# . # . . # . #
-. # . . . . # .
-. # . . . . # .
-# . # . . # . #
-# # . # # . # #
-# # # . . # # #
-
-Solution 23: transitions=64 | components=9 | std=3.317 | avg_dist=2.600
-. # . . . . # .
-# . # # # # . #
-. # . # # . # .
-. # # # # # # .
-. # # # # # # .
-. # . # # . # .
-# . # # # # . #
-. # . . . . # .
-
-Solution 24: transitions=64 | components=9 | std=1.732 | avg_dist=2.867
-# . # . . # . #
-. # # . . # # .
-# # . # # . # #
-. . # # # # . .
-. . # # # # . .
-# # . # # . # #
-. # # . . # # .
-# . # . . # . #
-
-Solution 25: transitions=64 | components=9 | std=1.732 | avg_dist=2.880
-. # # . . # # .
-# . # . . # . #
-# # . # # . # #
-. . # # # # . .
-. . # # # # . .
-# # . # # . # #
-# . # . . # . #
-. # # . . # # .
-
-Solution 26: transitions=64 | components=9 | std=1.732 | avg_dist=2.956
-. # # . . # # .
-# . . # # . . #
-# . # # # # . #
-. # # . . # # .
-. # # . . # # .
-# . # # # # . #
-# . . # # . . #
-. # # . . # # .
-
-Solution 27: transitions=64 | components=9 | std=1.732 | avg_dist=2.963
-# . . # # . . #
-. # # . . # # .
-. # # # # # # .
-# . # . . # . #
-# . # . . # . #
-. # # # # # # .
-. # # . . # # .
-# . . # # . . #
-
-Solution 28: transitions=64 | components=9 | std=1.732 | avg_dist=3.096
-. # . # # . # .
-# # # . . # # #
-. # # . . # # .
-# . . # # . . #
-# . . # # . . #
-. # # . . # # .
-# # # . . # # #
-. # . # # . # .
-
-Solution 29: transitions=64 | components=9 | std=1.732 | avg_dist=3.192
-. # . # # . # .
-# . # # # # . #
-. # # . . # # .
-# # . . . . # #
-# # . . . . # #
-. # # . . # # .
-# . # # # # . #
-. # . # # . # .
-
-Solution 30: transitions=64 | components=8 | std=1.732 | avg_dist=2.962
-# . # . . # . #
-. . # # # # . .
-# # . # # . # #
-. # # . . # # .
-. # # . . # # .
-# # . # # . # #
-. . # # # # . .
-# . # . . # . #
-
-Solution 31: transitions=64 | components=8 | std=1.732 | avg_dist=3.072
-# # . . . . # #
-# . # # # # . #
-. # . # # . # .
-. # # . . # # .
-. # # . . # # .
-. # . # # . # .
-# . # # # # . #
-# # . . . . # #
-
-Solution 32: transitions=64 | components=8 | std=1.732 | avg_dist=3.113
-. # # . . # # .
-# # . # # . # #
-# . . # # . . #
-. # # . . # # .
-. # # . . # # .
-# . . # # . . #
-# # . # # . # #
-. # # . . # # .
-
-Solution 33: transitions=64 | components=8 | std=3.317 | avg_dist=3.351
+Solution 37: transitions=64 | components=8 | avg_dist=3.3512 | std=3.3166
 # # # . . # # #
 # . # . . # . #
 # # . # # . # #
@@ -330,57 +370,17 @@ Solution 33: transitions=64 | components=8 | std=3.317 | avg_dist=3.351
 # . # . . # . #
 # # # . . # # #
 
-Solution 34: transitions=64 | components=6 | std=1.732 | avg_dist=2.925
-# . # . . # . #
-. . # # # # . .
+Solution 38: transitions=64 | components=12 | avg_dist=3.5471 | std=3.3166
 # # # . . # # #
-. # . # # . # .
-. # . # # . # .
-# # # . . # # #
-. . # # # # . .
-# . # . . # . #
-
-Solution 35: transitions=64 | components=6 | std=1.732 | avg_dist=3.034
-# # . . . . # #
-# . # # # # . #
-. # # . . # # .
-. # . # # . # .
-. # . # # . # .
-. # # . . # # .
-# . # # # # . #
-# # . . . . # #
-
-Solution 36: transitions=64 | components=6 | std=1.732 | avg_dist=3.082
-# . # . . # . #
-. # # # # # # .
-# # . . . . # #
-. # . # # . # .
-. # . # # . # .
-# # . . . . # #
-. # # # # # # .
-# . # . . # . #
-
-Solution 37: transitions=64 | components=5 | std=1.732 | avg_dist=3.024
-. . # # # # . .
-. # # . . # # .
 # # . # # . # #
 # . # . . # . #
+. # . . . . # .
+. # . . . . # .
 # . # . . # . #
 # # . # # . # #
-. # # . . # # .
-. . # # # # . .
+# # # . . # # #
 
-Solution 38: transitions=64 | components=5 | std=1.732 | avg_dist=3.095
-. # # . . # # .
-# . # # # # . #
-# # . . . . # #
-. # . # # . # .
-. # . # # . # .
-# # . . . . # #
-# . # # # # . #
-. # # . . # # .
-
-Solution 39: transitions=56 | components=13 | std=3.317 | avg_dist=2.628
+Solution 39: transitions=56 | components=13 | avg_dist=2.6284 | std=3.3166
 # . # . . # . #
 . . . # # . . .
 # . # # # # . #
@@ -390,17 +390,7 @@ Solution 39: transitions=56 | components=13 | std=3.317 | avg_dist=2.628
 . . . # # . . .
 # . # . . # . #
 
-Solution 40: transitions=56 | components=12 | std=3.317 | avg_dist=3.487
-# # . # # . # #
-# # . # # . # #
-. . # . . # . .
-# # . . . . # #
-# # . . . . # #
-. . # . . # . .
-# # . # # . # #
-# # . # # . # #
-
-Solution 41: transitions=56 | components=9 | std=3.317 | avg_dist=2.649
+Solution 40: transitions=56 | components=9 | avg_dist=2.6492 | std=3.3166
 # . . # # . . #
 . . # . . # . .
 . # # # # # # .
@@ -410,7 +400,7 @@ Solution 41: transitions=56 | components=9 | std=3.317 | avg_dist=2.649
 . . # . . # . .
 # . . # # . . #
 
-Solution 42: transitions=56 | components=9 | std=3.317 | avg_dist=2.690
+Solution 41: transitions=56 | components=9 | avg_dist=2.6903 | std=3.3166
 . . # # # # . .
 . # . . . . # .
 # . # # # # . #
@@ -420,207 +410,7 @@ Solution 42: transitions=56 | components=9 | std=3.317 | avg_dist=2.690
 . # . . . . # .
 . . # # # # . .
 
-Solution 43: transitions=56 | components=9 | std=3.317 | avg_dist=2.757
-. # . . . . # .
-# . # # # # . #
-. # # # # # # .
-. # # . . # # .
-. # # . . # # .
-. # # # # # # .
-# . # # # # . #
-. # . . . . # .
-
-Solution 44: transitions=56 | components=9 | std=1.732 | avg_dist=2.799
-. # # . . # # .
-# . . # # . . #
-# . . # # . . #
-. # # # # # # .
-. # # # # # # .
-# . . # # . . #
-# . . # # . . #
-. # # . . # # .
-
-Solution 45: transitions=56 | components=9 | std=1.732 | avg_dist=2.800
-. # . # # . # .
-# # . . . . # #
-. . # # # # . .
-# . # # # # . #
-# . # # # # . #
-. . # # # # . .
-# # . . . . # #
-. # . # # . # .
-
-Solution 46: transitions=56 | components=9 | std=1.732 | avg_dist=2.882
-# . . # # . . #
-. # . # # . # .
-. . # # # # . .
-# # # . . # # #
-# # # . . # # #
-. . # # # # . .
-. # . # # . # .
-# . . # # . . #
-
-Solution 47: transitions=56 | components=9 | std=1.732 | avg_dist=2.895
-. # . # # . # .
-# . . # # . . #
-. . # # # # . .
-# # # . . # # #
-# # # . . # # #
-. . # # # # . .
-# . . # # . . #
-. # . # # . # .
-
-Solution 48: transitions=56 | components=9 | std=1.732 | avg_dist=3.271
-# # . # # . # #
-# # . . . . # #
-. . # # # # . .
-# . # . . # . #
-# . # . . # . #
-. . # # # # . .
-# # . . . . # #
-# # . # # . # #
-
-Solution 49: transitions=56 | components=9 | std=3.317 | avg_dist=3.390
-# # # . . # # #
-# # . # # . # #
-# . . . . . . #
-. # . # # . # .
-. # . # # . # .
-# . . . . . . #
-# # . # # . # #
-# # # . . # # #
-
-Solution 50: transitions=56 | components=9 | std=3.317 | avg_dist=3.411
-# # . # # . # #
-# # # . . # # #
-. # . . . . # .
-# . . # # . . #
-# . . # # . . #
-. # . . . . # .
-# # # . . # # #
-# # . # # . # #
-
-Solution 51: transitions=56 | components=8 | std=1.732 | avg_dist=2.901
-# . . # # . . #
-. . # # # # . .
-. # . # # . # .
-# # # . . # # #
-# # # . . # # #
-. # . # # . # .
-. . # # # # . .
-# . . # # . . #
-
-Solution 52: transitions=56 | components=8 | std=1.732 | avg_dist=2.943
-. . # # # # . .
-. # . # # . # .
-# . . # # . . #
-# # # . . # # #
-# # # . . # # #
-# . . # # . . #
-. # . # # . # .
-. . # # # # . .
-
-Solution 53: transitions=56 | components=8 | std=3.317 | avg_dist=3.052
-. # . # # . # .
-# # . # # . # #
-. . . # # . . .
-# # # . . # # #
-# # # . . # # #
-. . . # # . . .
-# # . # # . # #
-. # . # # . # .
-
-Solution 54: transitions=56 | components=8 | std=3.317 | avg_dist=3.194
-. # # . . # # .
-# # # . . # # #
-# # . # # . # #
-. . # . . # . .
-. . # . . # . .
-# # . # # . # #
-# # # . . # # #
-. # # . . # # .
-
-Solution 55: transitions=56 | components=8 | std=1.732 | avg_dist=3.270
-# # # . . # # #
-# . . # # . . #
-# . . # # . . #
-. # # . . # # .
-. # # . . # # .
-# . . # # . . #
-# . . # # . . #
-# # # . . # # #
-
-Solution 56: transitions=56 | components=8 | std=1.732 | avg_dist=3.390
-. # # # # # # .
-# . . # # . . #
-# . # . . # . #
-# # . . . . # #
-# # . . . . # #
-# . # . . # . #
-# . . # # . . #
-. # # # # # # .
-
-Solution 57: transitions=56 | components=8 | std=3.317 | avg_dist=3.506
-# # . # # . # #
-# . # # # # . #
-. # . . . . # .
-# # . . . . # #
-# # . . . . # #
-. # . . . . # .
-# . # # # # . #
-# # . # # . # #
-
-Solution 58: transitions=56 | components=6 | std=1.732 | avg_dist=2.864
-# . . # # . . #
-. . # # # # . .
-. # # . . # # .
-# # . # # . # #
-# # . # # . # #
-. # # . . # # .
-. . # # # # . .
-# . . # # . . #
-
-Solution 59: transitions=56 | components=6 | std=3.317 | avg_dist=3.021
-# . . # # . . #
-. # # # # # # .
-. # . . . . # .
-# # . # # . # #
-# # . # # . # #
-. # . . . . # .
-. # # # # # # .
-# . . # # . . #
-
-Solution 60: transitions=56 | components=6 | std=3.317 | avg_dist=3.144
-# . # # # # . #
-. . # . . # . .
-# # # . . # # #
-# . . # # . . #
-# . . # # . . #
-# # # . . # # #
-. . # . . # . .
-# . # # # # . #
-
-Solution 61: transitions=56 | components=6 | std=1.732 | avg_dist=3.295
-. # # # # # # .
-# # . . . . # #
-# . # . . # . #
-# . . # # . . #
-# . . # # . . #
-# . # . . # . #
-# # . . . . # #
-. # # # # # # .
-
-Solution 62: transitions=56 | components=6 | std=1.732 | avg_dist=3.301
-# . # # # # . #
-. # # . . # # .
-# # . . . . # #
-# . . # # . . #
-# . . # # . . #
-# # . . . . # #
-. # # . . # # .
-# . # # # # . #
-
-Solution 63: transitions=56 | components=5 | std=3.317 | avg_dist=2.710
+Solution 42: transitions=56 | components=5 | avg_dist=2.7097 | std=3.3166
 . . # # # # . .
 . . # . . # . .
 # # . # # . # #
@@ -630,7 +420,137 @@ Solution 63: transitions=56 | components=5 | std=3.317 | avg_dist=2.710
 . . # . . # . .
 . . # # # # . .
 
-Solution 64: transitions=56 | components=5 | std=4.359 | avg_dist=3.024
+Solution 43: transitions=56 | components=9 | avg_dist=2.7573 | std=3.3166
+. # . . . . # .
+# . # # # # . #
+. # # # # # # .
+. # # . . # # .
+. # # . . # # .
+. # # # # # # .
+# . # # # # . #
+. # . . . . # .
+
+Solution 44: transitions=56 | components=2 | avg_dist=2.7677 | std=3.3166
+. . # . . # . .
+. # # # # # # .
+# # # . . # # #
+. # . # # . # .
+. # . # # . # .
+# # # . . # # #
+. # # # # # # .
+. . # . . # . .
+
+Solution 45: transitions=56 | components=9 | avg_dist=2.7985 | std=1.7321
+. # # . . # # .
+# . . # # . . #
+# . . # # . . #
+. # # # # # # .
+. # # # # # # .
+# . . # # . . #
+# . . # # . . #
+. # # . . # # .
+
+Solution 46: transitions=56 | components=9 | avg_dist=2.8000 | std=1.7321
+. # . # # . # .
+# # . . . . # #
+. . # # # # . .
+# . # # # # . #
+# . # # # # . #
+. . # # # # . .
+# # . . . . # #
+. # . # # . # .
+
+Solution 47: transitions=56 | components=1 | avg_dist=2.8048 | std=3.3166
+. . # . . # . .
+. # # # # # # .
+# # . # # . # #
+. # # . . # # .
+. # # . . # # .
+# # . # # . # #
+. # # # # # # .
+. . # . . # . .
+
+Solution 48: transitions=56 | components=6 | avg_dist=2.8644 | std=1.7321
+# . . # # . . #
+. . # # # # . .
+. # # . . # # .
+# # . # # . # #
+# # . # # . # #
+. # # . . # # .
+. . # # # # . .
+# . . # # . . #
+
+Solution 49: transitions=56 | components=2 | avg_dist=2.8774 | std=4.3589
+. # . . . . # .
+# # # # # # # #
+. # # . . # # .
+. # . # # . # .
+. # . # # . # .
+. # # . . # # .
+# # # # # # # #
+. # . . . . # .
+
+Solution 50: transitions=56 | components=9 | avg_dist=2.8821 | std=1.7321
+# . . # # . . #
+. # . # # . # .
+. . # # # # . .
+# # # . . # # #
+# # # . . # # #
+. . # # # # . .
+. # . # # . # .
+# . . # # . . #
+
+Solution 51: transitions=56 | components=9 | avg_dist=2.8951 | std=1.7321
+. # . # # . # .
+# . . # # . . #
+. . # # # # . .
+# # # . . # # #
+# # # . . # # #
+. . # # # # . .
+# . . # # . . #
+. # . # # . # .
+
+Solution 52: transitions=56 | components=8 | avg_dist=2.9015 | std=1.7321
+# . . # # . . #
+. . # # # # . .
+. # . # # . # .
+# # # . . # # #
+# # # . . # # #
+. # . # # . # .
+. . # # # # . .
+# . . # # . . #
+
+Solution 53: transitions=56 | components=1 | avg_dist=2.9145 | std=4.3589
+. # . . . . # .
+# # # # # # # #
+. # . # # . # .
+. # # . . # # .
+. # # . . # # .
+. # . # # . # .
+# # # # # # # #
+. # . . . . # .
+
+Solution 54: transitions=56 | components=8 | avg_dist=2.9426 | std=1.7321
+. . # # # # . .
+. # . # # . # .
+# . . # # . . #
+# # # . . # # #
+# # # . . # # #
+# . . # # . . #
+. # . # # . # .
+. . # # # # . .
+
+Solution 55: transitions=56 | components=6 | avg_dist=3.0215 | std=3.3166
+# . . # # . . #
+. # # # # # # .
+. # . . . . # .
+# # . # # . # #
+# # . # # . # #
+. # . . . . # .
+. # # # # # # .
+# . . # # . . #
+
+Solution 56: transitions=56 | components=5 | avg_dist=3.0240 | std=4.3589
 # . # . . # . #
 . # # . . # # .
 # # # # # # # #
@@ -640,7 +560,37 @@ Solution 64: transitions=56 | components=5 | std=4.359 | avg_dist=3.024
 . # # . . # # .
 # . # . . # . #
 
-Solution 65: transitions=56 | components=5 | std=3.317 | avg_dist=3.175
+Solution 57: transitions=56 | components=1 | avg_dist=3.0370 | std=4.3589
+. # # . . # # .
+# . # . . # . #
+# # # # # # # #
+. . # . . # . .
+. . # . . # . .
+# # # # # # # #
+# . # . . # . #
+. # # . . # # .
+
+Solution 58: transitions=56 | components=8 | avg_dist=3.0522 | std=3.3166
+. # . # # . # .
+# # . # # . # #
+. . . # # . . .
+# # # . . # # #
+# # # . . # # #
+. . . # # . . .
+# # . # # . # #
+. # . # # . # .
+
+Solution 59: transitions=56 | components=6 | avg_dist=3.1440 | std=3.3166
+# . # # # # . #
+. . # . . # . .
+# # # . . # # #
+# . . # # . . #
+# . . # # . . #
+# # # . . # # #
+. . # . . # . .
+# . # # # # . #
+
+Solution 60: transitions=56 | components=5 | avg_dist=3.1748 | std=3.3166
 . # # # # # # .
 # . . . . . . #
 # . # # # # . #
@@ -650,87 +600,27 @@ Solution 65: transitions=56 | components=5 | std=3.317 | avg_dist=3.175
 # . . . . . . #
 . # # # # # # .
 
-Solution 66: transitions=56 | components=5 | std=3.317 | avg_dist=3.239
-# . # . . # . #
-. # # # # # # .
-# # # . . # # #
-. # . . . . # .
-. # . . . . # .
-# # # . . # # #
-. # # # # # # .
-# . # . . # . #
-
-Solution 67: transitions=56 | components=5 | std=1.732 | avg_dist=3.314
-. # # # # # # .
-# . # . . # . #
-# # . . . . # #
-# . . # # . . #
-# . . # # . . #
-# # . . . . # #
-# . # . . # . #
-. # # # # # # .
-
-Solution 68: transitions=56 | components=5 | std=1.732 | avg_dist=3.332
-. # # # # # # .
-# # . . . . # #
-# . . # # . . #
-# . # . . # . #
-# . # . . # . #
-# . . # # . . #
-# # . . . . # #
-. # # # # # # .
-
-Solution 69: transitions=56 | components=2 | std=3.317 | avg_dist=2.768
-. . # . . # . .
-. # # # # # # .
-# # # . . # # #
-. # . # # . # .
-. # . # # . # .
-# # # . . # # #
-. # # # # # # .
-. . # . . # . .
-
-Solution 70: transitions=56 | components=2 | std=4.359 | avg_dist=2.877
-. # . . . . # .
-# # # # # # # #
+Solution 61: transitions=56 | components=8 | avg_dist=3.1941 | std=3.3166
 . # # . . # # .
-. # . # # . # .
-. # . # # . # .
-. # # . . # # .
-# # # # # # # #
-. # . . . . # .
-
-Solution 71: transitions=56 | components=1 | std=3.317 | avg_dist=2.805
-. . # . . # . .
-. # # # # # # .
+# # # . . # # #
 # # . # # . # #
-. # # . . # # .
-. # # . . # # .
+. . # . . # . .
+. . # . . # . .
 # # . # # . # #
+# # # . . # # #
+. # # . . # # .
+
+Solution 62: transitions=56 | components=5 | avg_dist=3.2391 | std=3.3166
+# . # . . # . #
 . # # # # # # .
-. . # . . # . .
-
-Solution 72: transitions=56 | components=1 | std=4.359 | avg_dist=2.914
+# # # . . # # #
 . # . . . . # .
-# # # # # # # #
-. # . # # . # .
-. # # . . # # .
-. # # . . # # .
-. # . # # . # .
-# # # # # # # #
 . # . . . . # .
-
-Solution 73: transitions=56 | components=1 | std=4.359 | avg_dist=3.037
-. # # . . # # .
+# # # . . # # #
+. # # # # # # .
 # . # . . # . #
-# # # # # # # #
-. . # . . # . .
-. . # . . # . .
-# # # # # # # #
-# . # . . # . #
-. # # . . # # .
 
-Solution 74: transitions=56 | components=1 | std=3.317 | avg_dist=3.252
+Solution 63: transitions=56 | components=1 | avg_dist=3.2522 | std=3.3166
 . # # . . # # .
 # . # # # # . #
 # # # . . # # #
@@ -740,7 +630,177 @@ Solution 74: transitions=56 | components=1 | std=3.317 | avg_dist=3.252
 # . # # # # . #
 . # # . . # # .
 
-Solution 75: transitions=48 | components=9 | std=4.359 | avg_dist=2.725
+Solution 64: transitions=56 | components=8 | avg_dist=3.2699 | std=1.7321
+# # # . . # # #
+# . . # # . . #
+# . . # # . . #
+. # # . . # # .
+. # # . . # # .
+# . . # # . . #
+# . . # # . . #
+# # # . . # # #
+
+Solution 65: transitions=56 | components=9 | avg_dist=3.2714 | std=1.7321
+# # . # # . # #
+# # . . . . # #
+. . # # # # . .
+# . # . . # . #
+# . # . . # . #
+. . # # # # . .
+# # . . . . # #
+# # . # # . # #
+
+Solution 66: transitions=56 | components=6 | avg_dist=3.2948 | std=1.7321
+. # # # # # # .
+# # . . . . # #
+# . # . . # . #
+# . . # # . . #
+# . . # # . . #
+# . # . . # . #
+# # . . . . # #
+. # # # # # # .
+
+Solution 67: transitions=56 | components=6 | avg_dist=3.3011 | std=1.7321
+# . # # # # . #
+. # # . . # # .
+# # . . . . # #
+# . . # # . . #
+# . . # # . . #
+# # . . . . # #
+. # # . . # # .
+# . # # # # . #
+
+Solution 68: transitions=56 | components=5 | avg_dist=3.3141 | std=1.7321
+. # # # # # # .
+# . # . . # . #
+# # . . . . # #
+# . . # # . . #
+# . . # # . . #
+# # . . . . # #
+# . # . . # . #
+. # # # # # # .
+
+Solution 69: transitions=56 | components=5 | avg_dist=3.3319 | std=1.7321
+. # # # # # # .
+# # . . . . # #
+# . . # # . . #
+# . # . . # . #
+# . # . . # . #
+# . . # # . . #
+# # . . . . # #
+. # # # # # # .
+
+Solution 70: transitions=56 | components=8 | avg_dist=3.3899 | std=1.7321
+. # # # # # # .
+# . . # # . . #
+# . # . . # . #
+# # . . . . # #
+# # . . . . # #
+# . # . . # . #
+# . . # # . . #
+. # # # # # # .
+
+Solution 71: transitions=56 | components=9 | avg_dist=3.3899 | std=3.3166
+# # # . . # # #
+# # . # # . # #
+# . . . . . . #
+. # . # # . # .
+. # . # # . # .
+# . . . . . . #
+# # . # # . # #
+# # # . . # # #
+
+Solution 72: transitions=56 | components=9 | avg_dist=3.4107 | std=3.3166
+# # . # # . # #
+# # # . . # # #
+. # . . . . # .
+# . . # # . . #
+# . . # # . . #
+. # . . . . # .
+# # # . . # # #
+# # . # # . # #
+
+Solution 73: transitions=56 | components=12 | avg_dist=3.4866 | std=3.3166
+# # . # # . # #
+# # . # # . # #
+. . # . . # . .
+# # . . . . # #
+# # . . . . # #
+. . # . . # . .
+# # . # # . # #
+# # . # # . # #
+
+Solution 74: transitions=56 | components=8 | avg_dist=3.5059 | std=3.3166
+# # . # # . # #
+# . # # # # . #
+. # . . . . # .
+# # . . . . # #
+# # . . . . # #
+. # . . . . # .
+# . # # # # . #
+# # . # # . # #
+
+Solution 75: transitions=48 | components=1 | avg_dist=2.4906 | std=3.3166
+. . # . . # . .
+. . # # # # . .
+# # . # # . # #
+. # # # # # # .
+. # # # # # # .
+# # . # # . # #
+. . # # # # . .
+. . # . . # . .
+
+Solution 76: transitions=48 | components=5 | avg_dist=2.4920 | std=3.3166
+. . . # # . . .
+. # # . . # # .
+. # # # # # # .
+# . # # # # . #
+# . # # # # . #
+. # # # # # # .
+. # # . . # # .
+. . . # # . . .
+
+Solution 77: transitions=48 | components=5 | avg_dist=2.5808 | std=3.3166
+. # . . . . # .
+# # . # # . # #
+. . # # # # . .
+. # # # # # # .
+. # # # # # # .
+. . # # # # . .
+# # . # # . # #
+. # . . . . # .
+
+Solution 78: transitions=48 | components=5 | avg_dist=2.5872 | std=3.3166
+# . . . . . . #
+. # # # # # # .
+. # . # # . # .
+. # # # # # # .
+. # # # # # # .
+. # . # # . # .
+. # # # # # # .
+# . . . . . . #
+
+Solution 79: transitions=48 | components=2 | avg_dist=2.7072 | std=3.3166
+. . . # # . . .
+. # # # # # # .
+. # # . . # # .
+# # . # # . # #
+# # . # # . # #
+. # # . . # # .
+. # # # # # # .
+. . . # # . . .
+
+Solution 80: transitions=48 | components=5 | avg_dist=2.7097 | std=4.3589
+# . # . . # . #
+. . # . . # . .
+# # # # # # # #
+. . # # # # . .
+. . # # # # . .
+# # # # # # # #
+. . # . . # . .
+# . # . . # . #
+
+Solution 81: transitions=48 | components=9 | avg_dist=2.7250 | std=4.3589
 # . . # # . . #
 . # . # # . # .
 . . . # # . . .
@@ -750,7 +810,7 @@ Solution 75: transitions=48 | components=9 | std=4.359 | avg_dist=2.725
 . # . # # . # .
 # . . # # . . #
 
-Solution 76: transitions=48 | components=9 | std=4.359 | avg_dist=2.738
+Solution 82: transitions=48 | components=9 | avg_dist=2.7380 | std=4.3589
 . # . # # . # .
 # . . # # . . #
 . . . # # . . .
@@ -760,7 +820,27 @@ Solution 76: transitions=48 | components=9 | std=4.359 | avg_dist=2.738
 # . . # # . . #
 . # . # # . # .
 
-Solution 77: transitions=48 | components=9 | std=5.196 | avg_dist=2.847
+Solution 83: transitions=48 | components=1 | avg_dist=2.7443 | std=3.3166
+. . . # # . . .
+. # # # # # # .
+. # . # # . # .
+# # # . . # # #
+# # # . . # # #
+. # . # # . # .
+. # # # # # # .
+. . . # # . . .
+
+Solution 84: transitions=48 | components=5 | avg_dist=2.8193 | std=1.7321
+# # . . . . # #
+# . # . . # . #
+. # # # # # # .
+. . # # # # . .
+. . # # # # . .
+. # # # # # # .
+# . # . . # . #
+# # . . . . # #
+
+Solution 85: transitions=48 | components=9 | avg_dist=2.8475 | std=5.1962
 # . # # # # . #
 . . . . . . . .
 # . # # # # . #
@@ -770,7 +850,27 @@ Solution 77: transitions=48 | components=9 | std=5.196 | avg_dist=2.847
 . . . . . . . .
 # . # # # # . #
 
-Solution 78: transitions=48 | components=9 | std=3.317 | avg_dist=2.957
+Solution 86: transitions=48 | components=5 | avg_dist=2.8605 | std=1.7321
+. # # . . # # .
+# # . . . . # #
+# . # # # # . #
+. . # # # # . .
+. . # # # # . .
+# . # # # # . #
+# # . . . . # #
+. # # . . # # .
+
+Solution 87: transitions=48 | components=1 | avg_dist=2.8668 | std=4.3589
+. . # # # # . .
+. . # . . # . .
+# # # # # # # #
+# . # . . # . #
+# . # . . # . #
+# # # # # # # #
+. . # . . # . .
+. . # # # # . .
+
+Solution 88: transitions=48 | components=9 | avg_dist=2.9571 | std=3.3166
 # # . # # . # #
 # . . . . . . #
 . . # # # # . .
@@ -780,7 +880,57 @@ Solution 78: transitions=48 | components=9 | std=3.317 | avg_dist=2.957
 # . . . . . . #
 # # . # # . # #
 
-Solution 79: transitions=48 | components=9 | std=3.317 | avg_dist=3.114
+Solution 89: transitions=48 | components=5 | avg_dist=2.9764 | std=1.7321
+# # . . . . # #
+# # # . . # # #
+. # . # # . # .
+. . # # # # . .
+. . # # # # . .
+. # . # # . # .
+# # # . . # # #
+# # . . . . # #
+
+Solution 90: transitions=48 | components=2 | avg_dist=2.9869 | std=1.7321
+. . # # # # . .
+. # # . . # # .
+# # # . . # # #
+# . . # # . . #
+# . . # # . . #
+# # # . . # # #
+. # # . . # # .
+. . # # # # . .
+
+Solution 91: transitions=48 | components=5 | avg_dist=3.0176 | std=3.3166
+. # # # # # # .
+# . . . . . . #
+# . . # # . . #
+# . # # # # . #
+# . # # # # . #
+# . . # # . . #
+# . . . . . . #
+. # # # # # # .
+
+Solution 92: transitions=48 | components=5 | avg_dist=3.0522 | std=1.7321
+# # . . . . # #
+# # . # # . # #
+. . # # # # . .
+. # # . . # # .
+. # # . . # # .
+. . # # # # . .
+# # . # # . # #
+# # . . . . # #
+
+Solution 93: transitions=48 | components=8 | avg_dist=3.0998 | std=3.3166
+# . # # # # . #
+. . . # # . . .
+# . . # # . . #
+# # # . . # # #
+# # # . . # # #
+# . . # # . . #
+. . . # # . . .
+# . # # # # . #
+
+Solution 94: transitions=48 | components=9 | avg_dist=3.1142 | std=3.3166
 # # . # # . # #
 # # . . . . # #
 . . . # # . . .
@@ -790,7 +940,57 @@ Solution 79: transitions=48 | components=9 | std=3.317 | avg_dist=3.114
 # # . . . . # #
 # # . # # . # #
 
-Solution 80: transitions=48 | components=9 | std=5.196 | avg_dist=3.329
+Solution 95: transitions=48 | components=5 | avg_dist=3.1786 | std=1.7321
+# . . # # . . #
+. # # # # # # .
+. # # . . # # .
+# # . . . . # #
+# # . . . . # #
+. # # . . # # .
+. # # # # # # .
+# . . # # . . #
+
+Solution 96: transitions=48 | components=2 | avg_dist=3.1916 | std=4.3589
+# # . . . . # #
+# # # # # # # #
+. # . . . . # .
+. # . # # . # .
+. # . # # . # .
+. # . . . . # .
+# # # # # # # #
+# # . . . . # #
+
+Solution 97: transitions=48 | components=8 | avg_dist=3.2094 | std=3.3166
+# # . # # . # #
+# . . # # . . #
+. . . # # . . .
+# # # . . # # #
+# # # . . # # #
+. . . # # . . .
+# . . # # . . #
+# # . # # . # #
+
+Solution 98: transitions=48 | components=5 | avg_dist=3.2328 | std=3.3166
+. # # # # # # .
+# . . # # . . #
+# . . . . . . #
+# # . # # . # #
+# # . # # . # #
+# . . . . . . #
+# . . # # . . #
+. # # # # # # .
+
+Solution 99: transitions=48 | components=5 | avg_dist=3.3141 | std=3.3166
+# # # . . # # #
+# . # . . # . #
+# # # . . # # #
+. . . # # . . .
+. . . # # . . .
+# # # . . # # #
+# . # . . # . #
+# # # . . # # #
+
+Solution 100: transitions=48 | components=9 | avg_dist=3.3294 | std=5.1962
 # # . # # . # #
 # # . # # . # #
 . . . . . . . .
@@ -800,167 +1000,7 @@ Solution 80: transitions=48 | components=9 | std=5.196 | avg_dist=3.329
 # # . # # . # #
 # # . # # . # #
 
-Solution 81: transitions=48 | components=8 | std=3.317 | avg_dist=3.100
-# . # # # # . #
-. . . # # . . .
-# . . # # . . #
-# # # . . # # #
-# # # . . # # #
-# . . # # . . #
-. . . # # . . .
-# . # # # # . #
-
-Solution 82: transitions=48 | components=8 | std=3.317 | avg_dist=3.209
-# # . # # . # #
-# . . # # . . #
-. . . # # . . .
-# # # . . # # #
-# # # . . # # #
-. . . # # . . .
-# . . # # . . #
-# # . # # . # #
-
-Solution 83: transitions=48 | components=8 | std=3.317 | avg_dist=3.568
-# # . # # . # #
-# # # . . # # #
-. # # . . # # .
-# . . . . . . #
-# . . . . . . #
-. # # . . # # .
-# # # . . # # #
-# # . # # . # #
-
-Solution 84: transitions=48 | components=6 | std=4.359 | avg_dist=3.452
-# # # # # # # #
-# . . . . . . #
-# . # . . # . #
-# . . # # . . #
-# . . # # . . #
-# . # . . # . #
-# . . . . . . #
-# # # # # # # #
-
-Solution 85: transitions=48 | components=5 | std=3.317 | avg_dist=2.492
-. . . # # . . .
-. # # . . # # .
-. # # # # # # .
-# . # # # # . #
-# . # # # # . #
-. # # # # # # .
-. # # . . # # .
-. . . # # . . .
-
-Solution 86: transitions=48 | components=5 | std=3.317 | avg_dist=2.581
-. # . . . . # .
-# # . # # . # #
-. . # # # # . .
-. # # # # # # .
-. # # # # # # .
-. . # # # # . .
-# # . # # . # #
-. # . . . . # .
-
-Solution 87: transitions=48 | components=5 | std=3.317 | avg_dist=2.587
-# . . . . . . #
-. # # # # # # .
-. # . # # . # .
-. # # # # # # .
-. # # # # # # .
-. # . # # . # .
-. # # # # # # .
-# . . . . . . #
-
-Solution 88: transitions=48 | components=5 | std=4.359 | avg_dist=2.710
-# . # . . # . #
-. . # . . # . .
-# # # # # # # #
-. . # # # # . .
-. . # # # # . .
-# # # # # # # #
-. . # . . # . .
-# . # . . # . #
-
-Solution 89: transitions=48 | components=5 | std=1.732 | avg_dist=2.819
-# # . . . . # #
-# . # . . # . #
-. # # # # # # .
-. . # # # # . .
-. . # # # # . .
-. # # # # # # .
-# . # . . # . #
-# # . . . . # #
-
-Solution 90: transitions=48 | components=5 | std=1.732 | avg_dist=2.860
-. # # . . # # .
-# # . . . . # #
-# . # # # # . #
-. . # # # # . .
-. . # # # # . .
-# . # # # # . #
-# # . . . . # #
-. # # . . # # .
-
-Solution 91: transitions=48 | components=5 | std=1.732 | avg_dist=2.976
-# # . . . . # #
-# # # . . # # #
-. # . # # . # .
-. . # # # # . .
-. . # # # # . .
-. # . # # . # .
-# # # . . # # #
-# # . . . . # #
-
-Solution 92: transitions=48 | components=5 | std=3.317 | avg_dist=3.018
-. # # # # # # .
-# . . . . . . #
-# . . # # . . #
-# . # # # # . #
-# . # # # # . #
-# . . # # . . #
-# . . . . . . #
-. # # # # # # .
-
-Solution 93: transitions=48 | components=5 | std=1.732 | avg_dist=3.052
-# # . . . . # #
-# # . # # . # #
-. . # # # # . .
-. # # . . # # .
-. # # . . # # .
-. . # # # # . .
-# # . # # . # #
-# # . . . . # #
-
-Solution 94: transitions=48 | components=5 | std=1.732 | avg_dist=3.179
-# . . # # . . #
-. # # # # # # .
-. # # . . # # .
-# # . . . . # #
-# # . . . . # #
-. # # . . # # .
-. # # # # # # .
-# . . # # . . #
-
-Solution 95: transitions=48 | components=5 | std=3.317 | avg_dist=3.233
-. # # # # # # .
-# . . # # . . #
-# . . . . . . #
-# # . # # . # #
-# # . # # . # #
-# . . . . . . #
-# . . # # . . #
-. # # # # # # .
-
-Solution 96: transitions=48 | components=5 | std=3.317 | avg_dist=3.314
-# # # . . # # #
-# . # . . # . #
-# # # . . # # #
-. . . # # . . .
-. . . # # . . .
-# # # . . # # #
-# . # . . # . #
-# # # . . # # #
-
-Solution 97: transitions=48 | components=5 | std=3.317 | avg_dist=3.332
+Solution 101: transitions=48 | components=5 | avg_dist=3.3319 | std=3.3166
 # # # . . # # #
 # # . . . . # #
 # . # # # # . #
@@ -970,87 +1010,7 @@ Solution 97: transitions=48 | components=5 | std=3.317 | avg_dist=3.332
 # # . . . . # #
 # # # . . # # #
 
-Solution 98: transitions=48 | components=5 | std=3.317 | avg_dist=3.458
-# . # # # # . #
-. # # . . # # .
-# # # . . # # #
-# . . . . . . #
-# . . . . . . #
-# # # . . # # #
-. # # . . # # .
-# . # # # # . #
-
-Solution 99: transitions=48 | components=5 | std=4.359 | avg_dist=3.489
-# # # # # # # #
-# . . . . . . #
-# . . # # . . #
-# . # . . # . #
-# . # . . # . #
-# . . # # . . #
-# . . . . . . #
-# # # # # # # #
-
-Solution 100: transitions=48 | components=2 | std=3.317 | avg_dist=2.707
-. . . # # . . .
-. # # # # # # .
-. # # . . # # .
-# # . # # . # #
-# # . # # . # #
-. # # . . # # .
-. # # # # # # .
-. . . # # . . .
-
-Solution 101: transitions=48 | components=2 | std=1.732 | avg_dist=2.987
-. . # # # # . .
-. # # . . # # .
-# # # . . # # #
-# . . # # . . #
-# . . # # . . #
-# # # . . # # #
-. # # . . # # .
-. . # # # # . .
-
-Solution 102: transitions=48 | components=2 | std=4.359 | avg_dist=3.192
-# # . . . . # #
-# # # # # # # #
-. # . . . . # .
-. # . # # . # .
-. # . # # . # .
-. # . . . . # .
-# # # # # # # #
-# # . . . . # #
-
-Solution 103: transitions=48 | components=1 | std=3.317 | avg_dist=2.491
-. . # . . # . .
-. . # # # # . .
-# # . # # . # #
-. # # # # # # .
-. # # # # # # .
-# # . # # . # #
-. . # # # # . .
-. . # . . # . .
-
-Solution 104: transitions=48 | components=1 | std=3.317 | avg_dist=2.744
-. . . # # . . .
-. # # # # # # .
-. # . # # . # .
-# # # . . # # #
-# # # . . # # #
-. # . # # . # .
-. # # # # # # .
-. . . # # . . .
-
-Solution 105: transitions=48 | components=1 | std=4.359 | avg_dist=2.867
-. . # # # # . .
-. . # . . # . .
-# # # # # # # #
-# . # . . # . #
-# . # . . # . #
-# # # # # # # #
-. . # . . # . .
-. . # # # # . .
-
-Solution 106: transitions=48 | components=1 | std=4.359 | avg_dist=3.349
+Solution 102: transitions=48 | components=1 | avg_dist=3.3488 | std=4.3589
 . # . # # . # .
 # # # # # # # #
 . # . . . . # .
@@ -1060,7 +1020,27 @@ Solution 106: transitions=48 | components=1 | std=4.359 | avg_dist=3.349
 # # # # # # # #
 . # . # # . # .
 
-Solution 107: transitions=48 | components=1 | std=3.317 | avg_dist=3.471
+Solution 103: transitions=48 | components=6 | avg_dist=3.4519 | std=4.3589
+# # # # # # # #
+# . . . . . . #
+# . # . . # . #
+# . . # # . . #
+# . . # # . . #
+# . # . . # . #
+# . . . . . . #
+# # # # # # # #
+
+Solution 104: transitions=48 | components=5 | avg_dist=3.4583 | std=3.3166
+# . # # # # . #
+. # # . . # # .
+# # # . . # # #
+# . . . . . . #
+# . . . . . . #
+# # # . . # # #
+. # # . . # # .
+# . # # # # . #
+
+Solution 105: transitions=48 | components=1 | avg_dist=3.4713 | std=3.3166
 . # # # # # # .
 # . # . . # . #
 # # # . . # # #
@@ -1070,7 +1050,17 @@ Solution 107: transitions=48 | components=1 | std=3.317 | avg_dist=3.471
 # . # . . # . #
 . # # # # # # .
 
-Solution 108: transitions=48 | components=1 | std=3.317 | avg_dist=3.566
+Solution 106: transitions=48 | components=5 | avg_dist=3.4890 | std=4.3589
+# # # # # # # #
+# . . . . . . #
+# . . # # . . #
+# . # . . # . #
+# . # . . # . #
+# . . # # . . #
+# . . . . . . #
+# # # # # # # #
+
+Solution 107: transitions=48 | components=1 | avg_dist=3.5664 | std=3.3166
 # # # . . # # #
 # . # # # # . #
 # # . . . . # #
@@ -1080,17 +1070,17 @@ Solution 108: transitions=48 | components=1 | std=3.317 | avg_dist=3.566
 # . # # # # . #
 # # # . . # # #
 
-Solution 109: transitions=40 | components=8 | std=1.732 | avg_dist=3.396
-# . # # # # . #
-. . # # # # . .
-# # . . . . # #
-# # . . . . # #
-# # . . . . # #
-# # . . . . # #
-. . # # # # . .
-# . # # # # . #
+Solution 108: transitions=48 | components=8 | avg_dist=3.5679 | std=3.3166
+# # . # # . # #
+# # # . . # # #
+. # # . . # # .
+# . . . . . . #
+# . . . . . . #
+. # # . . # # .
+# # # . . # # #
+# # . # # . # #
 
-Solution 110: transitions=40 | components=5 | std=4.359 | avg_dist=2.411
+Solution 109: transitions=40 | components=5 | avg_dist=2.4107 | std=4.3589
 . . . # # . . .
 . # . # # . # .
 . . # # # # . .
@@ -1100,87 +1090,7 @@ Solution 110: transitions=40 | components=5 | std=4.359 | avg_dist=2.411
 . # . # # . # .
 . . . # # . . .
 
-Solution 111: transitions=40 | components=5 | std=1.732 | avg_dist=2.738
-# # . . . . # #
-# . . # # . . #
-. . # # # # . .
-. # # # # # # .
-. # # # # # # .
-. . # # # # . .
-# . . # # . . #
-# # . . . . # #
-
-Solution 112: transitions=40 | components=5 | std=3.317 | avg_dist=2.744
-# . . . . . . #
-. # # # # # # .
-. # # # # # # .
-. # # . . # # .
-. # # . . # # .
-. # # # # # # .
-. # # # # # # .
-# . . . . . . #
-
-Solution 113: transitions=40 | components=5 | std=3.317 | avg_dist=2.895
-# # . . . . # #
-# # . # # . # #
-. . . # # . . .
-. # # # # # # .
-. # # # # # # .
-. . . # # . . .
-# # . # # . # #
-# # . . . . # #
-
-Solution 114: transitions=40 | components=5 | std=1.732 | avg_dist=2.925
-. . # # # # . .
-. . # # # # . .
-# # . . . . # #
-# # . # # . # #
-# # . # # . # #
-# # . . . . # #
-. . # # # # . .
-. . # # # # . .
-
-Solution 115: transitions=40 | components=5 | std=3.317 | avg_dist=3.018
-# # # . . # # #
-# . . . . . . #
-# . # # # # . #
-. . # # # # . .
-. . # # # # . .
-# . # # # # . #
-# . . . . . . #
-# # # . . # # #
-
-Solution 116: transitions=40 | components=5 | std=3.317 | avg_dist=3.157
-. # # . . # # .
-# # # . . # # #
-# # # . . # # #
-. . . # # . . .
-. . . # # . . .
-# # # . . # # #
-# # # . . # # #
-. # # . . # # .
-
-Solution 117: transitions=40 | components=5 | std=1.732 | avg_dist=3.175
-# # # . . # # #
-# # . . . . # #
-# . . # # . . #
-. . # # # # . .
-. . # # # # . .
-# . . # # . . #
-# # . . . . # #
-# # # . . # # #
-
-Solution 118: transitions=40 | components=5 | std=4.359 | avg_dist=3.766
-# # # # # # # #
-# # . . . . # #
-# . # . . # . #
-# . . . . . . #
-# . . . . . . #
-# . # . . # . #
-# # . . . . # #
-# # # # # # # #
-
-Solution 119: transitions=40 | components=1 | std=4.359 | avg_dist=2.430
+Solution 110: transitions=40 | components=1 | avg_dist=2.4300 | std=4.3589
 . . . # # . . .
 . . # # # # . .
 . # . # # . # .
@@ -1190,7 +1100,7 @@ Solution 119: transitions=40 | components=1 | std=4.359 | avg_dist=2.430
 . . # # # # . .
 . . . # # . . .
 
-Solution 120: transitions=40 | components=1 | std=4.359 | avg_dist=2.553
+Solution 111: transitions=40 | components=1 | avg_dist=2.5526 | std=4.3589
 . . # . . # . .
 . # # . . # # .
 # # # # # # # #
@@ -1200,7 +1110,7 @@ Solution 120: transitions=40 | components=1 | std=4.359 | avg_dist=2.553
 . # # . . # # .
 . . # . . # . .
 
-Solution 121: transitions=40 | components=1 | std=4.359 | avg_dist=2.648
+Solution 112: transitions=40 | components=1 | avg_dist=2.6477 | std=4.3589
 . . # . . # . .
 . . # # # # . .
 # # # # # # # #
@@ -1210,7 +1120,7 @@ Solution 121: transitions=40 | components=1 | std=4.359 | avg_dist=2.648
 . . # # # # . .
 . . # . . # . .
 
-Solution 122: transitions=40 | components=1 | std=3.317 | avg_dist=2.662
+Solution 113: transitions=40 | components=1 | avg_dist=2.6622 | std=3.3166
 . # . . . . # .
 # # # . . # # #
 . # # # # # # .
@@ -1220,7 +1130,27 @@ Solution 122: transitions=40 | components=1 | std=3.317 | avg_dist=2.662
 # # # . . # # #
 . # . . . . # .
 
-Solution 123: transitions=40 | components=1 | std=3.317 | avg_dist=2.785
+Solution 114: transitions=40 | components=5 | avg_dist=2.7380 | std=1.7321
+# # . . . . # #
+# . . # # . . #
+. . # # # # . .
+. # # # # # # .
+. # # # # # # .
+. . # # # # . .
+# . . # # . . #
+# # . . . . # #
+
+Solution 115: transitions=40 | components=5 | avg_dist=2.7443 | std=3.3166
+# . . . . . . #
+. # # # # # # .
+. # # # # # # .
+. # # . . # # .
+. # # . . # # .
+. # # # # # # .
+. # # # # # # .
+# . . . . . . #
+
+Solution 116: transitions=40 | components=1 | avg_dist=2.7855 | std=3.3166
 . . # # # # . .
 . . . # # . . .
 # . # # # # . #
@@ -1230,7 +1160,37 @@ Solution 123: transitions=40 | components=1 | std=3.317 | avg_dist=2.785
 . . . # # . . .
 . . # # # # . .
 
-Solution 124: transitions=40 | components=1 | std=3.317 | avg_dist=3.134
+Solution 117: transitions=40 | components=5 | avg_dist=2.8951 | std=3.3166
+# # . . . . # #
+# # . # # . # #
+. . . # # . . .
+. # # # # # # .
+. # # # # # # .
+. . . # # . . .
+# # . # # . # #
+# # . . . . # #
+
+Solution 118: transitions=40 | components=5 | avg_dist=2.9249 | std=1.7321
+. . # # # # . .
+. . # # # # . .
+# # . . . . # #
+# # . # # . # #
+# # . # # . # #
+# # . . . . # #
+. . # # # # . .
+. . # # # # . .
+
+Solution 119: transitions=40 | components=5 | avg_dist=3.0176 | std=3.3166
+# # # . . # # #
+# . . . . . . #
+# . # # # # . #
+. . # # # # . .
+. . # # # # . .
+# . # # # # . #
+# . . . . . . #
+# # # . . # # #
+
+Solution 120: transitions=40 | components=1 | avg_dist=3.1336 | std=3.3166
 # # . . . . # #
 # # # . . # # #
 . # # # # # # .
@@ -1240,7 +1200,27 @@ Solution 124: transitions=40 | components=1 | std=3.317 | avg_dist=3.134
 # # # . . # # #
 # # . . . . # #
 
-Solution 125: transitions=40 | components=1 | std=4.359 | avg_dist=3.349
+Solution 121: transitions=40 | components=5 | avg_dist=3.1570 | std=3.3166
+. # # . . # # .
+# # # . . # # #
+# # # . . # # #
+. . . # # . . .
+. . . # # . . .
+# # # . . # # #
+# # # . . # # #
+. # # . . # # .
+
+Solution 122: transitions=40 | components=5 | avg_dist=3.1748 | std=1.7321
+# # # . . # # #
+# # . . . . # #
+# . . # # . . #
+. . # # # # . .
+. . # # # # . .
+# . . # # . . #
+# # . . . . # #
+# # # . . # # #
+
+Solution 123: transitions=40 | components=1 | avg_dist=3.3488 | std=4.3589
 # # . . . . # #
 # # # # # # # #
 . # # . . # # .
@@ -1250,7 +1230,17 @@ Solution 125: transitions=40 | components=1 | std=4.359 | avg_dist=3.349
 # # # # # # # #
 # # . . . . # #
 
-Solution 126: transitions=40 | components=1 | std=4.359 | avg_dist=3.409
+Solution 124: transitions=40 | components=8 | avg_dist=3.3963 | std=1.7321
+# . # # # # . #
+. . # # # # . .
+# # . . . . # #
+# # . . . . # #
+# # . . . . # #
+# # . . . . # #
+. . # # # # . .
+# . # # # # . #
+
+Solution 125: transitions=40 | components=1 | avg_dist=3.4093 | std=4.3589
 . # # . . # # .
 # # # # # # # #
 # # . . . . # #
@@ -1260,7 +1250,7 @@ Solution 126: transitions=40 | components=1 | std=4.359 | avg_dist=3.409
 # # # # # # # #
 . # # . . # # .
 
-Solution 127: transitions=40 | components=1 | std=3.317 | avg_dist=3.547
+Solution 126: transitions=40 | components=1 | avg_dist=3.5471 | std=3.3166
 . # # # # # # .
 # # . # # . # #
 # . . . . . . #
@@ -1270,7 +1260,17 @@ Solution 127: transitions=40 | components=1 | std=3.317 | avg_dist=3.547
 # # . # # . # #
 . # # # # # # .
 
-Solution 128: transitions=40 | components=1 | std=4.359 | avg_dist=3.786
+Solution 127: transitions=40 | components=5 | avg_dist=3.7662 | std=4.3589
+# # # # # # # #
+# # . . . . # #
+# . # . . # . #
+# . . . . . . #
+# . . . . . . #
+# . # . . # . #
+# # . . . . # #
+# # # # # # # #
+
+Solution 128: transitions=40 | components=1 | avg_dist=3.7855 | std=4.3589
 # # # # # # # #
 # . # . . # . #
 # # . . . . # #
@@ -1280,7 +1280,7 @@ Solution 128: transitions=40 | components=1 | std=4.359 | avg_dist=3.786
 # . # . . # . #
 # # # # # # # #
 
-Solution 129: transitions=32 | components=5 | std=3.317 | avg_dist=2.430
+Solution 129: transitions=32 | components=5 | avg_dist=2.4300 | std=3.3166
 # . . . . . . #
 . . # # # # . .
 . # # # # # # .
@@ -1290,7 +1290,7 @@ Solution 129: transitions=32 | components=5 | std=3.317 | avg_dist=2.430
 . . # # # # . .
 # . . . . . . #
 
-Solution 130: transitions=32 | components=5 | std=4.359 | avg_dist=2.568
+Solution 130: transitions=32 | components=5 | avg_dist=2.5678 | std=4.3589
 # . . # # . . #
 . . . # # . . .
 . . # # # # . .
@@ -1300,27 +1300,7 @@ Solution 130: transitions=32 | components=5 | std=4.359 | avg_dist=2.568
 . . . # # . . .
 # . . # # . . #
 
-Solution 131: transitions=32 | components=5 | std=3.317 | avg_dist=3.471
-# # # . . # # #
-# # # . . # # #
-# # . . . . # #
-. . . # # . . .
-. . . # # . . .
-# # . . . . # #
-# # # . . # # #
-# # # . . # # #
-
-Solution 132: transitions=32 | components=2 | std=4.359 | avg_dist=3.609
-# # # # # # # #
-# # . . . . # #
-# . . . . . . #
-# . . # # . . #
-# . . # # . . #
-# . . . . . . #
-# # . . . . # #
-# # # # # # # #
-
-Solution 133: transitions=32 | components=1 | std=3.317 | avg_dist=2.587
+Solution 131: transitions=32 | components=1 | avg_dist=2.5872 | std=3.3166
 . . . # # . . .
 . . # # # # . .
 . # # # # # # .
@@ -1330,7 +1310,7 @@ Solution 133: transitions=32 | components=1 | std=3.317 | avg_dist=2.587
 . . # # # # . .
 . . . # # . . .
 
-Solution 134: transitions=32 | components=1 | std=4.359 | avg_dist=2.628
+Solution 132: transitions=32 | components=1 | avg_dist=2.6284 | std=4.3589
 . . # # # # . .
 . . . # # . . .
 # . . # # . . #
@@ -1340,7 +1320,7 @@ Solution 134: transitions=32 | components=1 | std=4.359 | avg_dist=2.628
 . . . # # . . .
 . . # # # # . .
 
-Solution 135: transitions=32 | components=1 | std=1.732 | avg_dist=3.082
+Solution 133: transitions=32 | components=1 | avg_dist=3.0820 | std=1.7321
 . . # # # # . .
 . . # # # # . .
 # # # . . # # #
@@ -1350,7 +1330,7 @@ Solution 135: transitions=32 | components=1 | std=1.732 | avg_dist=3.082
 . . # # # # . .
 . . # # # # . .
 
-Solution 136: transitions=32 | components=1 | std=1.732 | avg_dist=3.239
+Solution 134: transitions=32 | components=1 | avg_dist=3.2391 | std=1.7321
 . . # # # # . .
 . # # # # # # .
 # # . . . . # #
@@ -1360,7 +1340,27 @@ Solution 136: transitions=32 | components=1 | std=1.732 | avg_dist=3.239
 . # # # # # # .
 . . # # # # . .
 
-Solution 137: transitions=32 | components=1 | std=3.317 | avg_dist=3.628
+Solution 135: transitions=32 | components=5 | avg_dist=3.4713 | std=3.3166
+# # # . . # # #
+# # # . . # # #
+# # . . . . # #
+. . . # # . . .
+. . . # # . . .
+# # . . . . # #
+# # # . . # # #
+# # # . . # # #
+
+Solution 136: transitions=32 | components=2 | avg_dist=3.6091 | std=4.3589
+# # # # # # # #
+# # . . . . # #
+# . . . . . . #
+# . . # # . . #
+# . . # # . . #
+# . . . . . . #
+# # . . . . # #
+# # # # # # # #
+
+Solution 137: transitions=32 | components=1 | avg_dist=3.6284 | std=3.3166
 . # # # # # # .
 # # # . . # # #
 # # . . . . # #
@@ -1370,7 +1370,7 @@ Solution 137: transitions=32 | components=1 | std=3.317 | avg_dist=3.628
 # # # . . # # #
 . # # # # # # .
 
-Solution 138: transitions=32 | components=1 | std=4.359 | avg_dist=3.704
+Solution 138: transitions=32 | components=1 | avg_dist=3.7042 | std=4.3589
 # # # # # # # #
 # . . # # . . #
 # . . . . . . #
@@ -1380,17 +1380,7 @@ Solution 138: transitions=32 | components=1 | std=4.359 | avg_dist=3.704
 # . . # # . . #
 # # # # # # # #
 
-Solution 139: transitions=24 | components=4 | std=5.196 | avg_dist=3.628
-# # # . . # # #
-# # # . . # # #
-# # # . . # # #
-. . . . . . . .
-. . . . . . . .
-# # # . . # # #
-# # # . . # # #
-# # # . . # # #
-
-Solution 140: transitions=24 | components=1 | std=5.196 | avg_dist=2.273
+Solution 139: transitions=24 | components=1 | avg_dist=2.2729 | std=5.1962
 . . . . . . . .
 . # # # # # # .
 . # # # # # # .
@@ -1399,3 +1389,13 @@ Solution 140: transitions=24 | components=1 | std=5.196 | avg_dist=2.273
 . # # # # # # .
 . # # # # # # .
 . . . . . . . .
+
+Solution 140: transitions=24 | components=4 | avg_dist=3.6284 | std=5.1962
+# # # . . # # #
+# # # . . # # #
+# # # . . # # #
+. . . . . . . .
+. . . . . . . .
+# # # . . # # #
+# # # . . # # #
+# # # . . # # #

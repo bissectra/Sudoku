@@ -156,7 +156,6 @@ def write_solutions_with_scores(path: str = "solution.txt") -> None:
     # Order: descending transitions, descending components, ascending avg_dist, ascending std, then index
     scored.sort(key=lambda x: (
         -x[0]["transitions"],
-        -x[0]["components"],
         x[0]["avg_dist"],
         x[0]["std"],
         x[1],
@@ -168,13 +167,13 @@ def write_solutions_with_scores(path: str = "solution.txt") -> None:
     for new_idx, (score, _orig_idx, grid) in enumerate(scored, start=1):
         lines.append("")
         lines.append(
-            "Solution {i}: transitions={t} | components={c} | std={s:.3f} | avg_dist={d:.3f}"
+            "Solution {i}: transitions={t} | components={c} | avg_dist={d:.4f} | std={s:.4f}"
             .format(
                 i=new_idx,
                 t=score["transitions"],
                 c=score["components"],
-                s=score["std"],
                 d=score["avg_dist"],
+                s=score["std"],
             )
         )
         lines.append(format_grid(grid))
