@@ -54,6 +54,7 @@ const dicePipPattern: Record<number, [number, number][]> = {
 
 export const drawDice = (s: p5): void => {
   s.noStroke();
+  s.fill(255);
   s.ambientMaterial(235, 232, 220);
   s.specularMaterial(250);
   s.shininess(20);
