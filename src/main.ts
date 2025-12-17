@@ -94,6 +94,8 @@ const sketch = (s: p5): void => {
     const diceSize = cellSize * 0.6;
     const pipGap = diceSize * 0.26;
     const pipRadius = diceSize * 0.1;
+    const pipDepth = diceSize * 0.18;
+    const pipThickness = 0.25;
     const diceValue = ((row * 8 + col) % 6) + 1;
     const pipPositions = dicePipPattern[diceValue] ?? dicePipPattern[1];
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
@@ -109,11 +111,16 @@ const sketch = (s: p5): void => {
     s.push();
     s.noStroke();
     s.fill(35);
-    const pipZ = diceSize / 2 - pipRadius * 0.15;
+    const pipZ = diceSize / 2 + 0.3;
     pipPositions.forEach(([offsetX, offsetY]) => {
       s.push();
       s.translate(offsetX * pipGap, offsetY * pipGap, pipZ);
-      s.sphere(pipRadius, 16, 12);
+      s.scale(1, 1, pipThickness);
+      s.noStroke();
+      s.fill(0);
+      s.specularMaterial(10);
+      s.shininess(40);
+      s.sphere(pipRadius, 20, 16);
       s.pop();
     });
     s.pop();
