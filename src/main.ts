@@ -179,7 +179,7 @@ const sketch = (s: p5): void => {
     cellIndex: number,
     isHovered: boolean
   ): void => {
-    const diceSize = cellSize * 0.6;
+    const diceSize = cellSize * 0.8;
     const pipGap = diceSize * 0.26;
     const pipRadius = diceSize * 0.1;
     const pipThickness = 0.25;
