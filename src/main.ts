@@ -1,201 +1,20 @@
 import p5 from "p5";
-
-type Grid = string[];
-
-type SolutionPayload = Grid[];
-
-type RequestedIndexInfo = {
-  zeroBasedIndex: number;
-  hasSegment: boolean;
-  parsedValue: number | null;
-};
-
-type DiceRotation = "left" | "up" | "right" | "down";
-type RotationAxis = "x" | "y";
-type RollingState = {
-  cellIndex: number;
-  rotation: DiceRotation;
-  startTime: number;
-};
-type RollingAnimation = RollingState & {
-  progress: number;
-};
-
-const DICE_ROTATIONS: DiceRotation[] = ["left", "up", "right", "down"];
-
-enum Orientation {
-  TOP = "TOP",
-  NORTH = "NORTH",
-  EAST = "EAST",
-  BOTTOM = "BOTTOM",
-  SOUTH = "SOUTH",
-  WEST = "WEST",
-}
-
-const ORIENTATION_OPPOSITE: Record<Orientation, Orientation> = {
-  [Orientation.TOP]: Orientation.BOTTOM,
-  [Orientation.BOTTOM]: Orientation.TOP,
-  [Orientation.NORTH]: Orientation.SOUTH,
-  [Orientation.SOUTH]: Orientation.NORTH,
-  [Orientation.EAST]: Orientation.WEST,
-  [Orientation.WEST]: Orientation.EAST,
-};
-
-const XY_ORIENTATIONS: Array<[Orientation, Orientation, Orientation]> = [
-  [Orientation.EAST, Orientation.NORTH, Orientation.TOP],
-  [Orientation.EAST, Orientation.SOUTH, Orientation.BOTTOM],
-  [Orientation.EAST, Orientation.TOP, Orientation.SOUTH],
-  [Orientation.EAST, Orientation.BOTTOM, Orientation.NORTH],
-  [Orientation.WEST, Orientation.NORTH, Orientation.BOTTOM],
-  [Orientation.WEST, Orientation.SOUTH, Orientation.TOP],
-  [Orientation.WEST, Orientation.TOP, Orientation.NORTH],
-  [Orientation.WEST, Orientation.BOTTOM, Orientation.SOUTH],
-  [Orientation.NORTH, Orientation.EAST, Orientation.BOTTOM],
-  [Orientation.NORTH, Orientation.WEST, Orientation.TOP],
-  [Orientation.NORTH, Orientation.TOP, Orientation.EAST],
-  [Orientation.NORTH, Orientation.BOTTOM, Orientation.WEST],
-  [Orientation.SOUTH, Orientation.EAST, Orientation.TOP],
-  [Orientation.SOUTH, Orientation.WEST, Orientation.BOTTOM],
-  [Orientation.SOUTH, Orientation.TOP, Orientation.WEST],
-  [Orientation.SOUTH, Orientation.BOTTOM, Orientation.EAST],
-  [Orientation.TOP, Orientation.EAST, Orientation.NORTH],
-  [Orientation.TOP, Orientation.WEST, Orientation.SOUTH],
-  [Orientation.TOP, Orientation.NORTH, Orientation.WEST],
-  [Orientation.TOP, Orientation.SOUTH, Orientation.EAST],
-  [Orientation.BOTTOM, Orientation.EAST, Orientation.SOUTH],
-  [Orientation.BOTTOM, Orientation.WEST, Orientation.NORTH],
-  [Orientation.BOTTOM, Orientation.NORTH, Orientation.EAST],
-  [Orientation.BOTTOM, Orientation.SOUTH, Orientation.WEST],
-];
-
-const XY_KEY = (x: Orientation, y: Orientation): string => `${x}|${y}`;
-
-const Z_FROM_XY = new Map<string, Orientation>();
-XY_ORIENTATIONS.forEach(([x, y, z]) => {
-  Z_FROM_XY.set(XY_KEY(x, y), z);
-});
-
-const ROLL_TABLE: Record<DiceRotation, Partial<Record<Orientation, Orientation>>> = {
-  up: {
-    [Orientation.TOP]: Orientation.NORTH,
-    [Orientation.NORTH]: Orientation.BOTTOM,
-    [Orientation.BOTTOM]: Orientation.SOUTH,
-    [Orientation.SOUTH]: Orientation.TOP,
-  },
-  down: {
-    [Orientation.TOP]: Orientation.SOUTH,
-    [Orientation.SOUTH]: Orientation.BOTTOM,
-    [Orientation.BOTTOM]: Orientation.NORTH,
-    [Orientation.NORTH]: Orientation.TOP,
-  },
-  right: {
-    [Orientation.TOP]: Orientation.EAST,
-    [Orientation.EAST]: Orientation.BOTTOM,
-    [Orientation.BOTTOM]: Orientation.WEST,
-    [Orientation.WEST]: Orientation.TOP,
-  },
-  left: {
-    [Orientation.TOP]: Orientation.WEST,
-    [Orientation.WEST]: Orientation.BOTTOM,
-    [Orientation.BOTTOM]: Orientation.EAST,
-    [Orientation.EAST]: Orientation.TOP,
-  },
-};
-
-class CubeOrientation {
-  constructor(public readonly x: Orientation, public readonly y: Orientation) {
-    if (!Z_FROM_XY.has(XY_KEY(x, y))) {
-      throw new Error(`Invalid orientation combination: ${x}/${y}`);
-    }
-  }
-
-  get key(): string {
-    return XY_KEY(this.x, this.y);
-  }
-
-  get z(): Orientation {
-    return Z_FROM_XY.get(this.key)!;
-  }
-
-  roll(direction: DiceRotation): CubeOrientation {
-    const table = ROLL_TABLE[direction];
-    const rotate = (orientation: Orientation): Orientation =>
-      table?.[orientation] ?? orientation;
-    return new CubeOrientation(rotate(this.x), rotate(this.y));
-  }
-
-  static identity(): CubeOrientation {
-    return new CubeOrientation(Orientation.EAST, Orientation.NORTH);
-  }
-}
-
-const DEFAULT_ORIENTATION = CubeOrientation.identity();
-
-const ALL_ORIENTATIONS = XY_ORIENTATIONS.map(
-  ([x, y]) => new CubeOrientation(x, y)
-);
-
-const ORIENTATION_INDEX_BY_KEY = new Map<string, number>();
-ALL_ORIENTATIONS.forEach((orientation, index) => {
-  ORIENTATION_INDEX_BY_KEY.set(orientation.key, index);
-});
-
-const ORIENTATION_ROTATION_SEQUENCES: DiceRotation[][] = (() => {
-  const sequences: DiceRotation[][] = Array.from(
-    { length: ALL_ORIENTATIONS.length },
-    () => []
-  );
-  const visited = new Set<string>();
-  const queue: Array<{ orientation: CubeOrientation; sequence: DiceRotation[] }> = [
-    { orientation: DEFAULT_ORIENTATION, sequence: [] },
-  ];
-  visited.add(DEFAULT_ORIENTATION.key);
-
-  while (queue.length > 0) {
-    const { orientation, sequence } = queue.shift()!;
-    const index = ORIENTATION_INDEX_BY_KEY.get(orientation.key);
-    if (index !== undefined && sequences[index].length === 0) {
-      sequences[index] = sequence;
-    }
-    for (const rotation of DICE_ROTATIONS) {
-      const next = orientation.roll(rotation);
-      if (visited.has(next.key)) {
-        continue;
-      }
-      visited.add(next.key);
-      queue.push({ orientation: next, sequence: [...sequence, rotation] });
-    }
-  }
-
-  return sequences;
-})();
-
-const getRotationSequence = (orientation: CubeOrientation): DiceRotation[] => {
-  const index = ORIENTATION_INDEX_BY_KEY.get(orientation.key);
-  if (index === undefined) {
-    return [];
-  }
-  return ORIENTATION_ROTATION_SEQUENCES[index];
-};
+import {
+  Grid,
+  RollingAnimation,
+  RollingState,
+  SolutionPayload,
+  DiceRotation,
+} from "./types";
+import {
+  CubeOrientation,
+  DICE_ROTATIONS,
+  getRotationSequence,
+} from "./orientation";
+import { applyRotationTransform, drawDice } from "./diceDrawing";
+import { parseRequestedIndex } from "./request";
 
 const ROLL_DURATION_MS = 320;
-
-const rotationAxisAngleMap: Record<DiceRotation, { axis: RotationAxis; angle: number }> = {
-  left: { axis: "y", angle: -90 },
-  right: { axis: "y", angle: 90 },
-  up: { axis: "x", angle: 90 },
-  down: { axis: "x", angle: -90 },
-};
-
-const applyRotationTransform = (p: p5, rotation: DiceRotation, multiplier = 1): void => {
-  const { axis, angle } = rotationAxisAngleMap[rotation];
-  const actualAngle = angle * multiplier;
-  if (axis === "x") {
-    p.rotateX(actualAngle);
-  } else {
-    p.rotateY(actualAngle);
-  }
-};
 
 type RendererWithCamera = {
   _curCamera?: {
@@ -209,35 +28,6 @@ type RendererWithCamera = {
 };
 
 type RendererAwareP5 = p5 & { _renderer?: RendererWithCamera };
-
-
-const parseRequestedIndex = (): RequestedIndexInfo => {
-  const segments = window.location.pathname.split("/").filter(Boolean);
-  if (segments.length === 0) {
-    return {
-      zeroBasedIndex: 0,
-      hasSegment: false,
-      parsedValue: null,
-    };
-  }
-
-  const lastSegment = segments[segments.length - 1];
-  const parsed = Number(lastSegment);
-  if (!Number.isFinite(parsed) || Number.isNaN(parsed)) {
-    return {
-      zeroBasedIndex: 0,
-      hasSegment: true,
-      parsedValue: null,
-    };
-  }
-
-  const zeroBased = Math.max(0, Math.floor(parsed) - 1);
-  return {
-    zeroBasedIndex: zeroBased,
-    hasSegment: true,
-    parsedValue: parsed,
-  };
-};
 
 const sketch = (s: p5): void => {
   let payload: SolutionPayload | null = null;
@@ -318,102 +108,6 @@ const sketch = (s: p5): void => {
     rollingState = null;
   };
 
-  const dicePipPattern: Record<number, [number, number][]> = {
-    1: [[0, 0]],
-    2: [
-      [-1, -1],
-      [1, 1],
-    ],
-    3: [
-      [-1, -1],
-      [0, 0],
-      [1, 1],
-    ],
-    4: [
-      [-1, -1],
-      [-1, 1],
-      [1, -1],
-      [1, 1],
-    ],
-    5: [
-      [-1, -1],
-      [-1, 1],
-      [0, 0],
-      [1, -1],
-      [1, 1],
-    ],
-    6: [
-      [-1, -1],
-      [-1, 0],
-      [-1, 1],
-      [1, -1],
-      [1, 0],
-      [1, 1],
-    ],
-  };
-
-  const drawDice = (): void => {
-    // Dice body
-    s.noStroke();
-    s.ambientMaterial(235, 232, 220); // warm ivory
-    s.specularMaterial(250);
-    s.shininess(20);
-    s.box(1);
-
-    // Dice edges -- uncomment to enable
-    // s.noFill();
-    // s.stroke(180);
-    // s.strokeWeight(0.5);
-    // s.box(1.01);
-
-    const pipRadius = 0.15;
-    const faceOffset = 0.5;
-    const pipOffset = 0.2;
-
-    // Draw pips for each face
-    const faceValues = [1, 2, 3, 4, 5, 6];
-    const faceNormals = [
-      [0, 0, 1], // top
-      [0, 1, 0], // front
-      [1, 0, 0], // right
-      [-1, 0, 0], // left
-      [0, -1, 0], // back
-      [0, 0, -1], // bottom
-    ];
-
-    for (let i = 0; i < faceValues.length; i += 1) {
-      const faceValue = faceValues[i];
-      const normal = faceNormals[i];
-      const pips = dicePipPattern[faceValue];
-
-      s.push();
-      s.translate(
-        (normal[0] * faceOffset),
-        (normal[1] * faceOffset),
-        (normal[2] * faceOffset)
-      );
-      if (normal[0] !== 0) {
-        s.rotateY(normal[0] * 90);
-      } else if (normal[1] !== 0) {
-        s.rotateX(-normal[1] * 90);
-      } else if (normal[2] === -1) {
-        s.rotateY(180);
-      }
-
-      for (const pip of pips) {
-        s.push();
-        s.translate(pip[0] * pipOffset, pip[1] * pipOffset, 0.02);
-        s.ambientMaterial(40, 40, 40); // soft charcoal
-        s.shininess(10);
-        s.noStroke();
-        s.ellipse(0, 0, pipRadius, pipRadius);
-        s.pop();
-      }
-
-      s.pop();
-    }
-  }
-
   const drawDiceForCell = (
     cellIndex: number,
     isHovered: boolean,
@@ -438,7 +132,7 @@ const sketch = (s: p5): void => {
       applyRotationTransform(s, rotation);
     }
     s.scale(diceSize);
-    drawDice();
+    drawDice(s);
     s.pop();
 
     s.push();
