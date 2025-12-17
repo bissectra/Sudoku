@@ -304,8 +304,10 @@ const sketch = (s: p5): void => {
       return;
     }
 
+    const BOARD_ROTATION_X = 0;
+
     s.push();
-    s.rotateX(30);
+    s.rotateX(BOARD_ROTATION_X);
     s.translate(-gridDimension / 2 + cellSize / 2, -gridDimension / 2 + cellSize / 2, 0);
 
     const renderer = (s as RendererAwareP5)._renderer;
@@ -316,7 +318,7 @@ const sketch = (s: p5): void => {
     const diceSize = cellSize * 0.6;
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
     const depthOffset = boxDepth / 2 + diceElevation;
-    const rotationRadians = s.radians(30);
+    const rotationRadians = s.radians(BOARD_ROTATION_X);
     const cosAngle = Math.cos(rotationRadians);
     const sinAngle = Math.sin(rotationRadians);
 
@@ -349,6 +351,27 @@ const sketch = (s: p5): void => {
       };
     };
 
+    const hoverThreshold = cellSize * 0.8;
+    let bestHoverIndex: number | null = null;
+    let bestHoverDistance = hoverThreshold;
+
+    for (let row = 0; row < 8; row += 1) {
+      for (let col = 0; col < 8; col += 1) {
+        const hoverPos = projectCellCenter(row, col);
+        if (!hoverPos) {
+          continue;
+        }
+        const hoverDistance = Math.hypot(
+          hoverPos.screenX - s.mouseX,
+          hoverPos.screenY - s.mouseY
+        );
+        if (hoverDistance < bestHoverDistance) {
+          bestHoverDistance = hoverDistance;
+          bestHoverIndex = row * 8 + col;
+        }
+      }
+    }
+
     for (let row = 0; row < 8; row += 1) {
       for (let col = 0; col < 8; col += 1) {
         const value = selectedGrid[row][col];
@@ -358,14 +381,6 @@ const sketch = (s: p5): void => {
         const columnOffset = col * (cellSize + cellSpacing);
         const rowOffset = row * (cellSize + cellSpacing);
         s.translate(columnOffset, rowOffset, boxDepth / 2);
-
-        const hoverPos = projectCellCenter(row, col);
-        const hoverThreshold = cellSize * 0.8;
-        const isHovered =
-          hoverPos !== null
-            ? Math.hypot(hoverPos.screenX - s.mouseX, hoverPos.screenY - s.mouseY) <
-              hoverThreshold
-            : false;
 
         const filledColor = s.color(70, 130, 180); // Steel Blue
         const emptyColor = s.color(240, 248, 255); // Alice Blue
@@ -382,6 +397,7 @@ const sketch = (s: p5): void => {
           continue;
         }
 
+        const isHovered = bestHoverIndex === cellIndex;
         drawDiceForCell(orientation, cellIndex, isHovered);
         s.pop();
       }
