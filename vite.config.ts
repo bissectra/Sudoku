@@ -27,14 +27,16 @@ const rootPathMiddleware = (): Plugin => ({
   },
 });
 
-const basePath = process.env.VITE_BASE_URL ?? "/";
-
-export default defineConfig({
-  base: basePath,
-  root: ".",
-  build: {
-    outDir: "dist",
-    emptyOutDir: true,
-  },
-  plugins: [rootPathMiddleware()],
+export default defineConfig(({ command }) => {
+  const fallbackBase = command === "build" ? "./" : "/";
+  const basePath = process.env.VITE_BASE_URL ?? fallbackBase;
+  return {
+    base: basePath,
+    root: ".",
+    build: {
+      outDir: "dist",
+      emptyOutDir: true,
+    },
+    plugins: [rootPathMiddleware()],
+  };
 });
