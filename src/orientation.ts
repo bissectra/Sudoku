@@ -35,6 +35,8 @@ export const DICE_FACE_DEFINITIONS: DiceFaceDefinition[] = [
   { orientation: Orientation.BOTTOM, normal: [0, 0, -1], value: 6 },
 ];
 
+export const DICE_DIGITS = [1, 2, 3, 4, 5, 6] as const;
+
 export const DICE_FACE_ORIENTATION_BY_VALUE: Record<number, Orientation> =
   DICE_FACE_DEFINITIONS.reduce<Record<number, Orientation>>((acc, face) => {
     acc[face.value] = face.orientation;
@@ -134,6 +136,33 @@ const DEFAULT_ORIENTATION = CubeOrientation.identity();
 const ALL_ORIENTATIONS = XY_ORIENTATIONS.map(
   ([x, y]) => new CubeOrientation(x, y)
 );
+
+type DigitOrientationPredicate = (orientation: CubeOrientation) => boolean;
+
+export const DIGIT_ORIENTATION_PREDICATES: Record<number, DigitOrientationPredicate> = {
+  1: (orientation) => orientation.z === Orientation.TOP,
+  2: (orientation) => orientation.y === Orientation.BOTTOM,
+  3: (orientation) => orientation.x === Orientation.TOP,
+  4: (orientation) => orientation.x === Orientation.BOTTOM,
+  5: (orientation) => orientation.y === Orientation.TOP,
+  6: (orientation) => orientation.z === Orientation.BOTTOM,
+};
+
+export const ORIENTATIONS_FOR_TOP_DIGIT: Record<number, CubeOrientation[]> = (() => {
+  const mapping = {} as Record<number, CubeOrientation[]>;
+  for (const digit of DICE_DIGITS) {
+    mapping[digit] = [];
+  }
+  for (const orientation of ALL_ORIENTATIONS) {
+    for (const digit of DICE_DIGITS) {
+      const predicate = DIGIT_ORIENTATION_PREDICATES[digit];
+      if (predicate(orientation)) {
+        mapping[digit].push(orientation);
+      }
+    }
+  }
+  return mapping;
+})();
 
 export const ORIENTATIONS_BY_TOP: Record<Orientation, CubeOrientation[]> = (() => {
   const mapping = {} as Record<Orientation, CubeOrientation[]>;

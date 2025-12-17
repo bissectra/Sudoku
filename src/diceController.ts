@@ -1,16 +1,14 @@
 import {
   CubeOrientation,
+  DICE_DIGITS,
   DICE_ROTATIONS,
-  DICE_FACE_ORIENTATION_BY_VALUE,
-  ORIENTATIONS_BY_TOP,
-  Orientation,
-  ORIENTATION_OPPOSITE,
+  DIGIT_ORIENTATION_PREDICATES,
+  ORIENTATIONS_FOR_TOP_DIGIT,
 } from "./orientation";
 import type { DiceRotation, Grid, RollingAnimation, RollingState } from "./types";
 
 const RANDOM_SEED = 0xdeadbeef;
 const ROLL_DURATION_MS = 320;
-const DIGITS = [1, 2, 3, 4, 5, 6];
 
 export class DiceController {
   public readonly diceCellsMask: boolean[];
@@ -84,7 +82,7 @@ export class DiceController {
         return true;
       }
       const { row, col } = orderedPositions[index];
-      const options = DIGITS.filter(
+      const options = DICE_DIGITS.filter(
         (digit) => !rowUsed[row].has(digit) && !colUsed[col].has(digit)
       );
       const shuffledOptions = this.shuffleArray(options);
@@ -114,13 +112,9 @@ export class DiceController {
   }
 
   private randomOrientationForTopValue(value: number): CubeOrientation {
-    const topOrientation = DICE_FACE_ORIENTATION_BY_VALUE[value];
-    if (!topOrientation) {
-      throw new Error(`Unsupported dice face value: ${value}`);
-    }
-    const candidates = ORIENTATIONS_BY_TOP[topOrientation];
+    const candidates = ORIENTATIONS_FOR_TOP_DIGIT[value];
     if (!candidates || candidates.length === 0) {
-      throw new Error(`No orientations defined for top face ${topOrientation}`);
+      throw new Error(`No orientations defined for top face value ${value}`);
     }
     return this.pickRandomElement(candidates);
   }
@@ -178,23 +172,11 @@ export class DiceController {
   }
 
   private getTopFaceValueFromOrientation(orientation: CubeOrientation): number {
-    if (orientation.z === Orientation.TOP) {
-      return 1;
-    }
-    if (ORIENTATION_OPPOSITE[orientation.z] === Orientation.TOP) {
-      return 6;
-    }
-    if (orientation.y === Orientation.TOP) {
-      return 5;
-    }
-    if (ORIENTATION_OPPOSITE[orientation.y] === Orientation.TOP) {
-      return 2;
-    }
-    if (orientation.x === Orientation.TOP) {
-      return 3;
-    }
-    if (ORIENTATION_OPPOSITE[orientation.x] === Orientation.TOP) {
-      return 4;
+    for (const digit of DICE_DIGITS) {
+      const predicate = DIGIT_ORIENTATION_PREDICATES[digit];
+      if (predicate(orientation)) {
+        return digit;
+      }
     }
     throw new Error("Unable to determine top face value for dice orientation.");
   }
