@@ -198,7 +198,7 @@ const sketch = (s: p5): void => {
   ): void => {
     const diceSize = cellSize * 0.8;
     const diceElevation = boxDepth / 2 + diceSize / 2 + 6;
-    const orientation = diceOrientations[cellIndex];
+    const orientation = diceOrientations[cellIndex].slice().reverse();
 
     s.push();
     s.translate(0, 0, diceElevation);
@@ -218,10 +218,10 @@ const sketch = (s: p5): void => {
           s.rotateY(90);
           break;
         case "up":
-          s.rotateX(-90);
+          s.rotateX(90);
           break;
         case "down":
-          s.rotateX(90);
+          s.rotateX(-90);
           break;
       }
     }
