@@ -131,7 +131,7 @@ const sketch = (s: p5): void => {
   refreshInfoLabel();
   const requested = parseRequestedIndex();
 
-  const orientationPresets = generateOrientations().slice(0, 1);
+  const orientationPresets = generateOrientations();
 
   // Dimensions for the drawing grid
   const cellSize = 50;
