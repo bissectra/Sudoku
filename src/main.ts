@@ -48,31 +48,31 @@ const rotateZ = (orientation: Orientation): Orientation => ({
 
 const generateOrientations = (): Orientation[] => {
   const base: Orientation = {
-    front: 6,
-    back: 1,
-    left: 5,
+    top: 1,
     right: 2,
-    top: 4,
-    bottom: 3,
+    back: 3,
+    front: 4,
+    left: 5,
+    bottom: 6,
   };
 
-  const encode = (orientation: Orientation): string =>
-    `${orientation.front}-${orientation.back}-${orientation.left}-${orientation.right}-${orientation.top}-${orientation.bottom}`;
+    const encode = (orientation: Orientation): string =>
+      `${orientation.front}-${orientation.back}-${orientation.left}-${orientation.right}-${orientation.top}-${orientation.bottom}`;
 
-  const queue: Orientation[] = [base];
-  const seen = new Set<string>();
-  const orientations: Orientation[] = [];
+    const stack: Orientation[] = [base];
+    const seen = new Set<string>();
+    const orientations: Orientation[] = [];
 
-  while (queue.length > 0 && seen.size < 24) {
-    const current = queue.shift()!;
-    const key = encode(current);
-    if (seen.has(key)) {
-      continue;
+    while (stack.length > 0 && seen.size < 24) {
+      const current = stack.pop()!;
+      const key = encode(current);
+      if (seen.has(key)) {
+        continue;
+      }
+      seen.add(key);
+      orientations.push(current);
+      stack.push(rotateZ(current), rotateX(rotateX(current)), rotateY(current));
     }
-    seen.add(key);
-    orientations.push(current);
-    queue.push(rotateZ(current), rotateX(current), rotateY(current));
-  }
 
   return orientations;
 };
@@ -206,10 +206,10 @@ const sketch = (s: p5): void => {
     s.push();
     s.noStroke();
     s.fill(35);
-    drawFacePips(0, 0, 0, orientation.front);
-    drawFacePips(180, 0, 0, orientation.back);
-    drawFacePips(-90, 0, 0, orientation.top);
-    drawFacePips(90, 0, 0, orientation.bottom);
+    drawFacePips(0, 0, 0, orientation.top);
+    drawFacePips(180, 0, 0, orientation.bottom);
+    drawFacePips(-90, 0, 0, orientation.front);
+    drawFacePips(90, 0, 0, orientation.back);
     drawFacePips(0, -90, 0, orientation.left);
     drawFacePips(0, 90, 0, orientation.right);
     s.pop();
