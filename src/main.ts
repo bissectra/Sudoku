@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { Grid, RollingAnimation } from "./types";
+import { Grid } from "./types";
 import { parseRequestedIndex } from "./request";
 import { DiceController } from "./diceController";
 import { renderGrid } from "./gridRenderer";
