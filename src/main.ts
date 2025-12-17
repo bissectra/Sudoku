@@ -131,7 +131,7 @@ const sketch = (s: p5): void => {
   refreshInfoLabel();
   const requested = parseRequestedIndex();
 
-  const orientationPresets = generateOrientations();
+  const orientationPresets = generateOrientations().slice(0);
 
   // Dimensions for the drawing grid
   const cellSize = 50;
@@ -224,10 +224,10 @@ const sketch = (s: p5): void => {
     s.noStroke();
     const faceFill = isHovered ? 80 : 35;
     s.fill(faceFill);
-    drawFacePips(0, 0, 0, orientation.front);
-    drawFacePips(180, 0, 0, orientation.back);
-    drawFacePips(-90, 0, 0, orientation.top);
-    drawFacePips(90, 0, 0, orientation.bottom);
+    drawFacePips(0, 0, 0, orientation.top);
+    drawFacePips(180, 0, 0, orientation.bottom);
+    drawFacePips(-90, 0, 0, orientation.front);
+    drawFacePips(90, 0, 0, orientation.back);
     drawFacePips(0, -90, 0, orientation.left);
     drawFacePips(0, 90, 0, orientation.right);
     s.pop();
