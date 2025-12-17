@@ -110,7 +110,7 @@ const sketch = (s: p5): void => {
     // draw a unit dice with pips
     // draws a box of size 1 centered at origin
     s.push();
-    s.normalMaterial();
+    s.fill(255, 0, 0);
     s.noStroke();
     s.box(1);
     s.pop();
@@ -150,8 +150,8 @@ const sketch = (s: p5): void => {
 
       for (const pip of pips) {
         s.push();
-        s.translate(pip[0] * pipOffset, pip[1] * pipOffset, 0.01);
-        s.fill(10);
+        s.translate(pip[0] * pipOffset, pip[1] * pipOffset, 0.02);
+        s.normalMaterial();
         s.noStroke();
         s.sphere(pipRadius);
         s.pop();
