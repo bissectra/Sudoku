@@ -225,7 +225,10 @@ const sketch = (s: p5): void => {
     s.ambientLight(60);
     s.directionalLight(255, 255, 255, 0, 1, 0);
     s.orbitControl();
+    s.push();
+    s.scale(1.5);
     drawGrid();
+    s.pop();
   };
 };
 
